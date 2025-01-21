@@ -12,6 +12,7 @@ pip install pygame
 If that doesn't work because pip is not installed:
 ```sh
 sudo apt install python3-pip
+pip install pygame
 ```
 
 
