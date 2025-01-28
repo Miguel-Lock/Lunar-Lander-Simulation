@@ -39,6 +39,7 @@ sudo apt install python3-pygame
 
 ### Update your branch (Merge main into your branch)
 ```sh
-# Pull latest changes and merge main into your branch
+git switch main
 git pull
+git switch <name of your branch>
 git merge main
