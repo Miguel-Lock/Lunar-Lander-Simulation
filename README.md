@@ -43,3 +43,6 @@ git switch main
 git pull
 git switch <name of your branch>
 git merge main
+```
+
+You may need to resolve merge conflicts.
