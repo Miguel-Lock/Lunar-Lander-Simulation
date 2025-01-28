@@ -6,8 +6,6 @@ from Screens.customize import Customize
 from Screens.history import History
 from Screens.simulation import Simulation
 
-#Matthew test comment
-
 SCREENWIDTH, SCREENHEIGHT = 1920,1080
 FPS=60
 
@@ -17,7 +15,10 @@ class Game:
         self.screen = pygame.display.set_mode((SCREENWIDTH,SCREENHEIGHT))
         self.clock = pygame.time.Clock()
 
+        # Program starts with the menu screen
         self.gameStateManger = GameStateManger('menu')
+
+        # All screens
         self.menu = Menu(self.screen, self.gameStateManger)
         self.customize = Customize(self.screen, self.gameStateManger)
         self.history = History(self.screen, self.gameStateManger)
@@ -38,7 +39,8 @@ class Game:
 
                 #This works universally for all states
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    self.quit()
+                    pygame.quit()
+                    sys.exit()
 
             self.states[self.gameStateManger.get_state()].run()
 

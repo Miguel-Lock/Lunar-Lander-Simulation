@@ -1,6 +1,7 @@
 import pygame
 import sys
 
+# All screens inherit from this class
 class BaseState:
     def __init__(self, display, gameStateManger):
         self.display = display
@@ -9,6 +10,7 @@ class BaseState:
         pygame.quit()
         sys.exit()
 
+# Manages what screen is currently being displayed
 class GameStateManger:
     def __init__(self, currentState):
         self.currentState = currentState
