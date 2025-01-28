@@ -20,3 +20,25 @@ If you encounter *error: externally-managed-environment*:
 ```sh
 sudo apt install python3-pygame
 ```
+
+
+## Git Workflow
+
+### Prerequisites
+- Main branch is protected - direct edits are not allowed
+- All changes must go through feature branches and pull requests
+
+### Creating a Branch
+1. From GitHub Web UI: Click "New Branch" button
+2. Ensure "main" is selected as the source
+3. Give your branch a name
+
+### Switching Branches
+- In VS Code: Click branch name in bottom-left status bar
+- Select desired branch from the dropdown
+
+### Update your branch (Merge main into your branch)
+```sh
+# Pull latest changes and merge main into your branch
+git pull
+git merge main
