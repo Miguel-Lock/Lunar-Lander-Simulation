@@ -6,6 +6,8 @@ from Screens.customize import Customize
 from Screens.history import History
 from Screens.simulation import Simulation
 
+#This is a test
+
 SCREENWIDTH, SCREENHEIGHT = 1920,1080
 FPS=60
 
