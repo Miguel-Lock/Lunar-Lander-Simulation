@@ -2,13 +2,13 @@ import pygame
 from game_state_manager import BaseState
 from pygame.locals import RLEACCEL
 from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE
+from Screens.algos import MyAlgos
 
 # Simulation screen
 class Simulation(BaseState):
-    def __init__(self, screen, BaseState):
-        super().__init__(screen, BaseState)
-        #self.display = screen #commented now, may be used later?
-        #container to manage all sprites (used for collision detection and mass updates)
+    def __init__(self, screen, gameStateManger):
+        super().__init__(screen, gameStateManger)
+        self.display = screen
         self.all_sprites = pygame.sprite.Group()
 
         self.rocket = OurFavoriteRocketShip() #create instance of OurFavoriteRocketShip
@@ -43,11 +43,11 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
         self.rect.center = (SCREENWIDTH // 2, SCREENHEIGHT // 8)
 
         self.is_landed = False
-
-        self.downY = 2
+        self.algos = MyAlgos()  # this is how we are going to use the algorithms
 
     def update(self, pressed_key):
         if not self.is_landed:
+            self.downY = self.algos.gravity()  # Update gravity value
             self.rect.move_ip(0, self.downY) #Moves down on y axis at rate self.downY
 
         # Check if rocket has landed
