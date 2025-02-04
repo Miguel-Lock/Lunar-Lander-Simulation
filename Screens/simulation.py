@@ -4,6 +4,8 @@ from pygame.locals import RLEACCEL
 from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE
 
 # Simulation screen
+
+
 class Simulation(BaseState):
     def __init__(self, screen, BaseState):
         super().__init__(screen, BaseState)
@@ -15,13 +17,19 @@ class Simulation(BaseState):
         self.all_sprites.add(self.rocket) #add rocket to all_sprites group
 
     def run(self):
-        self.display.fill('orange')
+        self.background = pygame.image.load(
+            "Screens/backgrounds/simulationscreen.png")
+        self.display.blit(self.background, (0, 0))
+        # self.display.fill('orange')
 
         # Text with directions
         font = pygame.font.Font(None, 36)
-        text_surface = font.render("Simulation. 1 for menu, 5 to quit", True, (255, 255, 255))  # White text
+        text_surface = font.render(
+            # White text
+            "Simulation. 1 for menu, 5 to quit", True, (255, 255, 255))
         text_rect = text_surface.get_rect()
-        text_rect.center = (self.display.get_width() // 2, self.display.get_height() // 2)  # Center on screen
+        text_rect.center = (self.display.get_width() // 2,
+                            self.display.get_height() // 2)  # Center on screen
         self.display.blit(text_surface, text_rect)
 
         # Key press detection
