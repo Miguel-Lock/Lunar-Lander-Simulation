@@ -2,15 +2,15 @@ import pygame
 from game_state_manager import BaseState
 from pygame.locals import RLEACCEL
 from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE
+from Screens.algos import MyAlgos
 
 # Simulation screen
 
 
 class Simulation(BaseState):
-    def __init__(self, screen, BaseState):
-        super().__init__(screen, BaseState)
-        #self.display = screen #commented now, may be used later?
-        #container to manage all sprites (used for collision detection and mass updates)
+    def __init__(self, screen, gameStateManger):
+        super().__init__(screen, gameStateManger)
+        self.display = screen
         self.all_sprites = pygame.sprite.Group()
 
         self.rocket = OurFavoriteRocketShip() #create instance of OurFavoriteRocketShip
@@ -51,38 +51,23 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
         self.rect.center = (SCREENWIDTH // 2, SCREENHEIGHT // 8)
 
         self.is_landed = False
-
-        self.downY = 2
-        self.rightX = 1
+        self.algos = MyAlgos()  # this is how we are going to use the algorithms
 
     def update(self, pressed_key):
         if not self.is_landed:
+            self.downY = self.algos.gravity()  # Update gravity value
             self.rect.move_ip(0, self.downY) #Moves down on y axis at rate self.downY
-            self.rect.move_ip(self.rightX, 0) #Moves right on x axis at rate self.rightX
 
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
             self.is_landed = True
             self.rect.bottom = SURFACE # Stop vertical movement
-            self.rightX = 0  # Stop horizontal movement
         else:
             self.is_landed = False
             if pressed_key[pygame.K_SPACE]:
                 self.rect.move_ip(0, -5)
-            if pressed_key[pygame.K_UP]:
-                self.rect.move_ip(0, -5)
-            if pressed_key[pygame.K_DOWN]:
-                self.rect.move_ip(0,5)
-            if pressed_key[pygame.K_LEFT]:
-                self.rect.move_ip(-5,0)
-            if pressed_key[pygame.K_RIGHT]:
-                self.rect.move_ip(5,0)
 
-        # Keep the rocket on the screen & above the surface
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.right > SCREENWIDTH:
-            self.rect.right = SCREENWIDTH
+        # Keep the rocket from flying off the screen
         if self.rect.top < 0:
             self.rect.top = 0
         if self.rect.bottom > SURFACE:
