@@ -12,7 +12,8 @@ class Menu(BaseState):
         # self.display.fill('red')
 
         # Text with directions
-        font = pygame.font.Font(None, 36)
+        font = pygame.font.Font(
+            "gui_code/fonts/UbuntuNerdFont-Regular.ttf", 36)
         text_surface = font.render(
             # White text
             "Menu. 2 for customize, 3 for history, 5 to quit", True, (255, 255, 255))
