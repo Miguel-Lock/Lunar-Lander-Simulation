@@ -45,12 +45,10 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
         self.is_landed = False
 
         self.downY = 2
-        self.rightX = 1
 
     def update(self, pressed_key):
         if not self.is_landed:
             self.rect.move_ip(0, self.downY) #Moves down on y axis at rate self.downY
-            self.rect.move_ip(self.rightX, 0) #Moves right on x axis at rate self.rightX
 
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
@@ -61,14 +59,6 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
             self.is_landed = False
             if pressed_key[pygame.K_SPACE]:
                 self.rect.move_ip(0, -5)
-            if pressed_key[pygame.K_UP]:
-                self.rect.move_ip(0, -5)
-            if pressed_key[pygame.K_DOWN]:
-                self.rect.move_ip(0,5)
-            if pressed_key[pygame.K_LEFT]:
-                self.rect.move_ip(-5,0)
-            if pressed_key[pygame.K_RIGHT]:
-                self.rect.move_ip(5,0)
 
         # Keep the rocket on the screen & above the surface
         if self.rect.left < 0:
