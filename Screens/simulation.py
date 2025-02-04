@@ -54,17 +54,12 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
         if self.rect.bottom >= SURFACE:
             self.is_landed = True
             self.rect.bottom = SURFACE # Stop vertical movement
-            self.rightX = 0  # Stop horizontal movement
         else:
             self.is_landed = False
             if pressed_key[pygame.K_SPACE]:
                 self.rect.move_ip(0, -5)
 
-        # Keep the rocket on the screen & above the surface
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.right > SCREENWIDTH:
-            self.rect.right = SCREENWIDTH
+        # Keep the rocket from flying off the screen
         if self.rect.top < 0:
             self.rect.top = 0
         if self.rect.bottom > SURFACE:
