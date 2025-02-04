@@ -5,9 +5,7 @@ from Screens.menu import Menu
 from Screens.customize import Customize
 from Screens.history import History
 from Screens.simulation import Simulation
-
-SCREENWIDTH, SCREENHEIGHT = 1920,1080
-FPS=60
+from constants import SCREENWIDTH, SCREENHEIGHT, FPS
 
 class Game:
     def __init__(self):
