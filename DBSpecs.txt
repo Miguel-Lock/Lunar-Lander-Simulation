@@ -1,0 +1,7 @@
+The Lunar Lander database will act as a way to "save attempts" and store the following:
+
+- Amount of fuel used
+- Time in the air
+- Cargo Weight Carried
+- Passengers 
+- Total Weight
