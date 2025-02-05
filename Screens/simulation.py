@@ -16,11 +16,13 @@ class Simulation(BaseState):
         self.rocket = OurFavoriteRocketShip() #create instance of OurFavoriteRocketShip
         self.all_sprites.add(self.rocket) #add rocket to all_sprites group
 
-    def run(self):
+        # Load background in init so it isn't loaded every frame
         self.background = pygame.image.load(
-            "Screens/backgrounds/simulationscreen.png")
+           "Screens/backgrounds/simulationscreen.png").convert_alpha() #convert_alpha may or may not improve performance
+
+    def run(self):
         self.display.blit(self.background, (0, 0))
-        # self.display.fill('orange')
+        #self.display.fill('orange')
 
         # Text with directions
         font = pygame.font.Font(None, 36)
