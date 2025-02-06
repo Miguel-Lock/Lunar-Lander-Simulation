@@ -7,7 +7,7 @@ from game_state_manager import BaseState
 class History(BaseState):
     def run(self):
         self.background = pygame.image.load(
-            "Screens/backgrounds/historybackground.png")
+            "Screens/backgrounds/historybackground.png").convert_alpha()
         self.display.blit(self.background, (0, 0))
         # self.display.fill('pink')
 

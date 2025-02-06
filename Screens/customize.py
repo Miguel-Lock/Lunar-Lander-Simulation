@@ -7,7 +7,7 @@ from game_state_manager import BaseState
 class Customize(BaseState):
     def run(self):
         self.background = pygame.image.load(
-            "Screens/backgrounds/customizebackground.png")
+            "Screens/backgrounds/customizebackground.png").onvert_alpha()
         self.display.blit(self.background, (0, 0))
         # self.display.fill('black')
 

@@ -7,7 +7,7 @@ from game_state_manager import BaseState
 class Menu(BaseState):
     def run(self):
         self.background = pygame.image.load(
-            "Screens/backgrounds/start_background.png")
+            "Screens/backgrounds/start_background.png").convert_alpha()
         self.display.blit(self.background, (0, 0))
         # self.display.fill('red')
 
