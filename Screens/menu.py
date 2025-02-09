@@ -1,5 +1,6 @@
 import pygame
 from game_state_manager import BaseState
+from constants import FONT
 
 # main menu screen
 
@@ -9,11 +10,9 @@ class Menu(BaseState):
         self.background = pygame.image.load(
             "Screens/backgrounds/start_background.png").convert_alpha()
         self.display.blit(self.background, (0, 0))
-        # self.display.fill('red')
 
         # Text with directions
-        font = pygame.font.Font(
-            "gui_code/fonts/UbuntuNerdFont-Regular.ttf", 36)
+        font = FONT
         text_surface = font.render(
             # White text
             "Menu. 2 for customize, 3 for history, 5 to quit", True, (255, 255, 255))
