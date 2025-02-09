@@ -48,8 +48,7 @@ class Simulation(BaseState):
         self.display.blit(self.rocket.surf, self.rocket.rect)
 
         # after rocket lands
-        # idea: should we have a button to lead to the results
-        # instead of automatically leading to results?
+        # delays for 3 seconds and then displays results
         if self.rocket.is_landed is True:
             time.sleep(3)
             self.gameStateManger.set_state('results')
