@@ -1,6 +1,6 @@
 import pygame
 from game_state_manager import BaseState
-from constants import FONT
+from constants import FONT, SCREENHEIGHT, SCREENWIDTH
 
 # main menu screen
 

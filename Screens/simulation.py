@@ -1,4 +1,5 @@
 import pygame
+import time  # for delay between landing and results
 from game_state_manager import BaseState
 from pygame.locals import RLEACCEL
 from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT
@@ -50,6 +51,7 @@ class Simulation(BaseState):
         # idea: should we have a button to lead to the results
         # instead of automatically leading to results?
         if self.rocket.is_landed is True:
+            time.sleep(3)
             self.gameStateManger.set_state('results')
 
 
