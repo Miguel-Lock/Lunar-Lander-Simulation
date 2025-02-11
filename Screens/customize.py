@@ -1,5 +1,6 @@
 import pygame
 from game_state_manager import BaseState
+from constants import FONT
 
 # Customize screen
 
@@ -7,12 +8,11 @@ from game_state_manager import BaseState
 class Customize(BaseState):
     def run(self):
         self.background = pygame.image.load(
-            "Screens/backgrounds/customizebackground.png")
+            "Screens/backgrounds/customizebackground.png").convert_alpha()
         self.display.blit(self.background, (0, 0))
-        # self.display.fill('black')
 
         # Text with directions
-        font = pygame.font.Font(None, 36)
+        font = FONT
         text_surface = font.render(
             # White text
             "Customize. 1 for menu, 4 for simulation, 5 to quit", True, (255, 255, 255))
