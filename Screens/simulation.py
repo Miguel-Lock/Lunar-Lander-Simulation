@@ -37,6 +37,7 @@ class Simulation(BaseState):
         # Key press detection
         keys = pygame.key.get_pressed()
         if keys[pygame.K_1]:
+            self.rocket.reset()  # Reset rocket state when leaving the page
             self.gameStateManger.set_state('menu')
         if keys[pygame.K_5]:
             self.quit()
@@ -74,3 +75,8 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
             self.rect.top = 0
         if self.rect.bottom > SURFACE:
             self.rect.bottom = SURFACE
+
+    def reset(self):
+        self.is_landed = False  # Reset is_landed
+        self.algos.reset()  # Reset algorithms
+        self.rect.center = (SCREENWIDTH // 2, SCREENHEIGHT // 8)  # Reset position
