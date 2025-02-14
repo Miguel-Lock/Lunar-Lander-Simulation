@@ -6,24 +6,24 @@ from Screens.customize import Customize
 from Screens.history import History
 from Screens.simulation import Simulation
 from Screens.results import Results
-from constants import SCREENWIDTH, SCREENHEIGHT, FPS
+from constants import FPS, SCREEN
 
 
 class Game:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+        # self.screen = SCREEN
         self.clock = pygame.time.Clock()
 
         # Program starts with the menu screen
         self.gameStateManger = GameStateManger('menu')
 
         # All screens
-        self.menu = Menu(self.screen, self.gameStateManger)
-        self.customize = Customize(self.screen, self.gameStateManger)
-        self.history = History(self.screen, self.gameStateManger)
-        self.simulation = Simulation(self.screen, self.gameStateManger)
-        self.results = Results(self.screen, self.gameStateManger)
+        self.menu = Menu(SCREEN, self.gameStateManger)
+        self.customize = Customize(SCREEN, self.gameStateManger)
+        self.history = History(SCREEN, self.gameStateManger)
+        self.simulation = Simulation(SCREEN, self.gameStateManger)
+        self.results = Results(SCREEN, self.gameStateManger)
 
         self.states = {
             'menu': self.menu,
