@@ -7,3 +7,5 @@ SCREENHEIGHT = 1080
 SURFACE = SCREENHEIGHT - (SCREENHEIGHT // 9)
 FPS = 60
 FONT = pygame.font.Font("gui_code/fonts/UbuntuNerdFont-Regular.ttf", 30)
+SCREEN = pygame.display.set_mode(
+    (SCREENWIDTH, SCREENHEIGHT))  # global screen size/variable
