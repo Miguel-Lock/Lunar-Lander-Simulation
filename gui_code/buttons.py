@@ -14,16 +14,22 @@ exit_button_img = pygame.image.load(
 
 class Button():
     def __init__(self, x, y, image, scale):
+
+        # makes the buttons scaleable
         w = image.get_width()
         h = image.get_height()
         self.image = pygame.transform.scale(
             image, (int(w * scale), int(h * scale)))
+
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+
+        # variable to store logic if left-click has been used on a button
         self.isClicked = False
 
     def draw(self):
 
+        # the returned variable to be used for every button instance
         action = False
 
         # get mouse position
