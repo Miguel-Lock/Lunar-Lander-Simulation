@@ -2,13 +2,14 @@ import pygame
 from game_state_manager import BaseState
 from gui_code.buttons import Button, exit_button_img, backtomenu_button_img
 
-# History screen
+
+# Results screen
 
 
-class History(BaseState):
+class Results(BaseState):
     def run(self):
         self.background = pygame.image.load(
-            "Screens/backgrounds/historybackground.png").convert_alpha()
+            "Screens/backgrounds/resultbackground.png").convert_alpha()
         self.display.blit(self.background, (0, 0))
 
         exit_button = Button(1660, 150, exit_button_img, 1)

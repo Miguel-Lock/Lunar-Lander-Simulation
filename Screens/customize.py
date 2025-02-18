@@ -1,5 +1,6 @@
 import pygame
 from game_state_manager import BaseState
+from gui_code.buttons import Button, start_button_img
 
 # Customize screen
 
@@ -7,25 +8,11 @@ from game_state_manager import BaseState
 class Customize(BaseState):
     def run(self):
         self.background = pygame.image.load(
-            "Screens/backgrounds/customizebackground.png")
+            "Screens/backgrounds/customizebackground.png").convert_alpha()
         self.display.blit(self.background, (0, 0))
-        # self.display.fill('black')
 
-        # Text with directions
-        font = pygame.font.Font(None, 36)
-        text_surface = font.render(
-            # White text
-            "Customize. 1 for menu, 4 for simulation, 5 to quit", True, (255, 255, 255))
-        text_rect = text_surface.get_rect()
-        text_rect.center = (self.display.get_width() // 2,
-                            self.display.get_height() // 2)  # Center on screen
-        self.display.blit(text_surface, text_rect)
+        # buttons for screen direction
+        customize_start_button = Button(1660, 975, start_button_img, 1)
 
-        # Key press detection
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_1]:
-            self.gameStateManger.set_state('menu')
-        if keys[pygame.K_4]:
+        if customize_start_button.draw() is True:
             self.gameStateManger.set_state('simulation')
-        if keys[pygame.K_5]:
-            self.quit()
