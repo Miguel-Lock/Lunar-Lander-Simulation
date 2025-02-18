@@ -1,6 +1,6 @@
 import pygame
 from game_state_manager import BaseState
-from constants import FONT
+from gui_code.buttons import Button, exit_button_img, backtomenu_button_img
 
 # History screen
 
@@ -11,19 +11,10 @@ class History(BaseState):
             "Screens/backgrounds/historybackground.png").convert_alpha()
         self.display.blit(self.background, (0, 0))
 
-        # Text with directions
-        font = FONT
-        text_surface = font.render(
-            # White text
-            "History. 1 for menu, 5 to quit", True, (255, 255, 255))
-        text_rect = text_surface.get_rect()
-        text_rect.center = (self.display.get_width() // 2,
-                            self.display.get_height() // 2)  # Center on screen
-        self.display.blit(text_surface, text_rect)
+        exit_button = Button(1660, 150, exit_button_img, 1)
+        menu_button = Button(1660, 50, backtomenu_button_img, 1)
 
-        # Key press detection
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_1]:
+        if menu_button.draw() is True:
             self.gameStateManger.set_state('menu')
-        if keys[pygame.K_5]:
+        if exit_button.draw() is True:
             self.quit()
