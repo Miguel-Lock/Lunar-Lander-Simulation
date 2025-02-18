@@ -12,8 +12,8 @@ class Results(BaseState):
             "Screens/backgrounds/resultbackground.png").convert_alpha()
         self.display.blit(self.background, (0, 0))
 
-        exit_button = Button(850, 750, exit_button_img, 1)
-        menu_button = Button(1000, 300, backtomenu_button_img, 1)
+        exit_button = Button(1660, 150, exit_button_img, 1)
+        menu_button = Button(1660, 50, backtomenu_button_img, 1)
 
         if menu_button.draw() is True:
             self.gameStateManger.set_state('menu')
