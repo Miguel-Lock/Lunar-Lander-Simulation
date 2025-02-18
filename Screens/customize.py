@@ -12,7 +12,7 @@ class Customize(BaseState):
         self.display.blit(self.background, (0, 0))
 
         # buttons for screen direction
-        start_button = Button(850, 450, start_button_img, 1)
+        customize_start_button = Button(1660, 975, start_button_img, 1)
 
-        if start_button.draw() is True:
+        if customize_start_button.draw() is True:
             self.gameStateManger.set_state('simulation')
