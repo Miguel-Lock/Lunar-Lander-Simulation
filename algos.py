@@ -1,4 +1,5 @@
 from constants import GRAVITY, MMOON, RMOON, FORCEOFTHRUST
+import time
 class MyAlgos:
     def __init__(self):
         self.gravity_value = 1 #starting gravity value
@@ -30,6 +31,10 @@ class MyAlgos:
     # MfAtF = mass of fuel used while thrusting to get Ft
     def netAvgatT(Ft, GmH, Mltl, MfAtF):
         return ((Ft - GmH * Mltl) / (Mltl - (0.5) * MfAtF))
+
+    
+    def netAvgWithoutThrust(GmH):
+        return GmH
 
     #Average velocity Model
     # vT = velicity at current movment
@@ -65,3 +70,51 @@ class MyAlgos:
     #Test for the current Altitute Calculator
     #correct if the awnser is 99901 m
     print("Test for Current Altitude: ", CurAlt(100000, 100, 1, -1.1170330701784104), "PASS")
+
+
+#starting values
+    #mass
+    mass = 3000
+    newMass = 0
+    #velocity: m/s
+    velocity = 100
+    newVelocity = 0
+    #height m
+    height = 100000
+    newHeight = 0
+    #mass of fuel used
+    massFuel = 10
+
+#prints out the starting stats
+    print("starting stats:")
+    print("mass = ", mass)
+    print("velocity = ", velocity)
+    print("height = ", height)
+    print(" ")
+
+#this is a test with the above starting values where the lander startes at a height of 100000m and imediatly applies thrusters
+    while velocity > 5:
+        newVelocity = avgVel(velocity, netAvgatT(fuelBurn(massFuel), gMoonAtH(height), mass, massFuel), 1)
+        newHeight = CurAlt(height, velocity, 1, netAvgatT(fuelBurn(massFuel), gMoonAtH(height), mass, massFuel))
+        print("velocity: ", newVelocity, "m/s")
+        print("height: ", newHeight, "m")
+        print("mass: ", mass, " kg")
+        print(" ")
+        velocity = newVelocity 
+        height = newHeight
+        mass = mass - massFuel
+        time.sleep(1)
+
+# #this is a test with the above starting values where the lander is just fee falling from 100000m
+#     while height >= 0:
+#         newVelocity = velocity + netAvgWithoutThrust(gMoonAtH(height))
+#         newHeight = CurAlt(height, velocity, 1, netAvgWithoutThrust(gMoonAtH(height)))
+#         print("velocity: ", newVelocity, "m/s")
+#         print("height: ", newHeight, "m")
+#         print("mass: ", mass, " kg")
+#         print(" ")
+#         velocity = newVelocity 
+#         height = newHeight
+#         #time.sleep(1)
+
+        

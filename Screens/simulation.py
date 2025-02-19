@@ -3,7 +3,7 @@ import time  # for delay between landing and results
 from game_state_manager import BaseState
 from pygame.locals import RLEACCEL
 from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE
-from Screens.algos import MyAlgos
+from algos import MyAlgos
 from gui_code.buttons import Button, backtomenu_button_img, exit_button_img
 
 # Simulation screen
