@@ -2,7 +2,7 @@ import pygame
 import time  # for delay between landing and results
 from game_state_manager import BaseState
 # from pygame.locals import RLEACCEL
-from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE
+from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN
 from Screens.algos import MyAlgos
 from gui_code.buttons import Button, backtomenu_button_img, exit_button_img
 
@@ -60,10 +60,11 @@ class Simulation(BaseState):
 class OurFavoriteRocketShip(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        # self.surf = pygame.Surface((40, 75))
-        # self.surf.fill((255, 255, 255))
         self.surf = tilapia_idle_img
         self.rect = self.surf.get_rect()
+        text_test = FONT.render(
+            "y = " + str(self.rect.height), 1, (255, 255, 255))
+        SCREEN.blit(text_test, (1660, 300))
 
         self.rect.center = (SCREENWIDTH // 2, SCREENHEIGHT // 8)
 
@@ -82,10 +83,14 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
             self.rect.bottom = SURFACE  # Stop vertical movement
         else:
             self.is_landed = False
+            # move the rocket up
+            # add thruster image when press space
             if pressed_key[pygame.K_SPACE] == 1:
                 self.surf = tilapia_thrust_img
                 self.rect.move_ip(0, -5)
             if pressed_key[pygame.K_SPACE] == 0:
+                # change the image back to idle image when
+                # not pressing space
                 self.surf = tilapia_idle_img
 
         # Keep the rocket from flying off the screen
