@@ -1,10 +1,18 @@
 import pygame
 import time  # for delay between landing and results
 from game_state_manager import BaseState
-from pygame.locals import RLEACCEL
+# from pygame.locals import RLEACCEL
 from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE
 from Screens.algos import MyAlgos
 from gui_code.buttons import Button, backtomenu_button_img, exit_button_img
+
+# importing idle rocket png
+tilapia_idle_img = pygame.image.load(
+    'Screens/rocket_assets/Tilapia.png').convert_alpha()
+
+# importing rocket with thrust png
+tilapia_thrust_img = pygame.image.load(
+    'Screens/rocket_assets/TilapiaThrust.png').convert_alpha()
 
 # Simulation screen
 
@@ -52,9 +60,10 @@ class Simulation(BaseState):
 class OurFavoriteRocketShip(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        self.surf = tilapia_idle_img
         self.surf = pygame.Surface((40, 75))
         self.surf.fill((255, 255, 255))
-        self.rect = self.surf.get_rect()
+
         self.rect.center = (SCREENWIDTH // 2, SCREENHEIGHT // 8)
 
         self.is_landed = False

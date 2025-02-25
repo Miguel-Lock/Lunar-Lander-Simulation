@@ -4,7 +4,7 @@ pygame.init()  # must initialize pygame
 
 SCREENWIDTH = 1920
 SCREENHEIGHT = 1080
-SURFACE = SCREENHEIGHT - (SCREENHEIGHT // 9)
+SURFACE = SCREENHEIGHT - (SCREENHEIGHT // 7.75)
 FPS = 60
 FONT = pygame.font.Font("gui_code/fonts/UbuntuNerdFont-Regular.ttf", 30)
 SCREEN = pygame.display.set_mode(
