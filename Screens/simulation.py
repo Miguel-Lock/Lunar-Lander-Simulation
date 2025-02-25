@@ -10,7 +10,7 @@ from gui_code.buttons import Button, backtomenu_button_img, exit_button_img
 tilapia_idle_img = pygame.image.load(
     'Screens/rocket_assets/Tilapia.png').convert_alpha()
 
-# importing rocket with thrust png
+# importing rocket thrust png
 tilapia_thrust_img = pygame.image.load(
     'Screens/rocket_assets/TilapiaThrust.png').convert_alpha()
 
