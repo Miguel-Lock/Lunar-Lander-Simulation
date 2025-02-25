@@ -60,9 +60,10 @@ class Simulation(BaseState):
 class OurFavoriteRocketShip(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        # self.surf = pygame.Surface((40, 75))
+        # self.surf.fill((255, 255, 255))
         self.surf = tilapia_idle_img
-        self.surf = pygame.Surface((40, 75))
-        self.surf.fill((255, 255, 255))
+        self.rect = self.surf.get_rect()
 
         self.rect.center = (SCREENWIDTH // 2, SCREENHEIGHT // 8)
 
@@ -81,8 +82,11 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
             self.rect.bottom = SURFACE  # Stop vertical movement
         else:
             self.is_landed = False
-            if pressed_key[pygame.K_SPACE]:
+            if pressed_key[pygame.K_SPACE] == 1:
+                self.surf = tilapia_thrust_img
                 self.rect.move_ip(0, -5)
+            if pressed_key[pygame.K_SPACE] == 0:
+                self.surf = tilapia_idle_img
 
         # Keep the rocket from flying off the screen
         if self.rect.top < 0:
