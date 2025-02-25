@@ -36,11 +36,8 @@ class Simulation(BaseState):
         self.display.blit(self.background, (0, 0))
 
         # Buttons for screen directions
-        exit_button = Button(1660, 150, exit_button_img, 1)
-        menu_button = Button(1660, 50, backtomenu_button_img, 1)
+        exit_button = Button(1660, 50, exit_button_img, 1)
 
-        if menu_button.draw() is True:
-            self.gameStateManger.set_state('menu')
         if exit_button.draw() is True:
             self.quit()
 
@@ -54,6 +51,7 @@ class Simulation(BaseState):
         # delays for 3 seconds and then displays results
         if self.rocket.is_landed is True:
             time.sleep(3)
+            self.rocket.reset()
             self.gameStateManger.set_state('results')
 
 
@@ -93,3 +91,8 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
             self.rect.top = 0
         if self.rect.bottom > SURFACE:
             self.rect.bottom = SURFACE
+
+    def reset(self):
+        self.is_landed = False
+        self.algos.reset()
+        self.rect.center = (SCREENWIDTH // 2, SCREENHEIGHT // 8)
