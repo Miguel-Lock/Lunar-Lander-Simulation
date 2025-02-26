@@ -1,10 +1,13 @@
 class MyAlgos:
     def __init__(self):
-        self.gravity_value = 1 #starting gravity value
+        self.downards_movement = 1 #starting gravity value
 
-    def gravity(self): #weight of change
-        self.gravity_value *= 1.005
-        return self.gravity_value
+    def move_down(self, firing_rockets): #weight of change
+        if not firing_rockets:
+            self.downards_movement += .05
+        elif firing_rockets:
+            self.downards_movement -= 0.05
+        return self.downards_movement
 
     def reset(self):
         self.__init__()

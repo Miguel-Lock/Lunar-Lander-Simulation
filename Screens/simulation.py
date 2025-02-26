@@ -71,7 +71,8 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
 
     def update(self, pressed_key):
         if not self.is_landed:
-            self.downY = self.algos.gravity()  # Update gravity value
+            # passes boolean so Algos know if thrusters are activated
+            self.downY = self.algos.move_down(pressed_key[pygame.K_SPACE]) 
             # Moves down on y axis at rate self.downY
             self.rect.move_ip(0, self.downY)
 
@@ -81,14 +82,11 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
             self.rect.bottom = SURFACE  # Stop vertical movement
         else:
             self.is_landed = False
-            # move the rocket up
             # add thruster image when press space
             if pressed_key[pygame.K_SPACE] == 1:
                 self.surf = tilapia_thrust_img
-                self.rect.move_ip(0, -5)
             if pressed_key[pygame.K_SPACE] == 0:
-                # change the image back to idle image when
-                # not pressing space
+                # change the image back to idle image when not pressing space
                 self.surf = tilapia_idle_img
 
         # Keep the rocket from flying off the screen
