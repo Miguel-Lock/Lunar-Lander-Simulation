@@ -77,6 +77,7 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
 
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
+            self.surf = tilapia_idle_img
             self.is_landed = True
             self.rect.bottom = SURFACE  # Stop vertical movement
         else:
