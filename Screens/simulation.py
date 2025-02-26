@@ -2,7 +2,7 @@ import pygame
 import time  # for delay between landing and results
 from game_state_manager import BaseState
 # from pygame.locals import RLEACCEL
-from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN
+from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM
 from Screens.algos import MyAlgos
 from gui_code.buttons import Button, backtomenu_button_img, exit_button_img
 
@@ -64,7 +64,8 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
             "y = " + str(self.rect.height), 1, (255, 255, 255))
         SCREEN.blit(text_test, (1660, 300))
 
-        self.rect.center = (SCREENWIDTH // 2, SCREENHEIGHT // 8)
+        self.rect.centerx = SCREENWIDTH // 2
+        self.rect.bottom = ROCKET_BOTTOM
 
         self.is_landed = False
         self.algos = MyAlgos()  # this is how we are going to use the algorithms
