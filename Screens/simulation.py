@@ -36,17 +36,11 @@ class Simulation(BaseState):
         self.display.blit(self.background, (0, 0))
 
         # Text for rocket info
-        info_text = f"Position: ({self.rocket.rect.x},{self.rocket.rect.y})\n"
-
-        rocket_info = FONT.render(
-            # variable display
-            info_text,
-            True, (255, 255, 255)
-        )
+        info_text = f"Speed: {self.rocket.rect.y}\nVelocity: {self.rocket.rect.y}\nFuel Remaining: {
+            self.rocket.rect.y}\nEngine: {self.rocket.thrust_switch()}"
+        rocket_info = FONT.render(info_text, True, (255, 255, 255))
         info_rect = rocket_info.get_rect()
-        # text position on screen
         info_rect.topleft = (50, 50)
-        # blit the text
         self.display.blit(rocket_info, info_rect)
 
         # Buttons for screen directions
@@ -80,7 +74,16 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
 
         self.is_landed = False
         self.is_successful = False  # False if crashed, True otherwise
-        self.algos = MyAlgos()  # this is how we are going to use the algorithm
+        self.algos = MyAlgos()  # this is how we are going to use algorithms
+        self.is_thrust = False
+
+    def thrust_switch(self):
+        switch = " "
+        if self.is_thrust:
+            switch = "ON"
+        if not self.is_thrust:
+            switch = "OFF"
+        return switch
 
     def update(self, pressed_key):
         if not self.is_landed:
@@ -91,8 +94,10 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
 
             if pressed_key[pygame.K_SPACE] == 1:
                 self.surf = tilapia_thrust_img
+                self.is_thrust = True
             else:
                 self.surf = tilapia_idle_img
+                self.is_thrust = False
 
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
