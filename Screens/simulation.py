@@ -35,16 +35,19 @@ class Simulation(BaseState):
     def run(self):
         self.display.blit(self.background, (0, 0))
 
+        # Text for rocket info
+        info_text = f"Position: ({self.rocket.rect.x},{self.rocket.rect.y})\n"
+
         rocket_info = FONT.render(
             # variable display
-            "Speed: \nVelocity: \nFuel: \nDistance: \n",
+            info_text,
             True, (255, 255, 255)
         )
         info_rect = rocket_info.get_rect()
         # text position on screen
-        info_rect.topleft = (self.display.get_width() // 1,
-                             self.display.get_height() // 2)
-        # blit the
+        info_rect.topleft = (50, 50)
+        # blit the text
+        self.display.blit(rocket_info, info_rect)
 
         # Buttons for screen directions
         exit_button = Button(1660, 50, exit_button_img, 1)
