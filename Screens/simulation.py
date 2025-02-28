@@ -13,16 +13,18 @@ class Simulation(BaseState):
         self.display = screen
         self.all_sprites = pygame.sprite.Group()
 
-        self.rocket = OurFavoriteRocketShip() #create instance of OurFavoriteRocketShip
-        self.all_sprites.add(self.rocket) #add rocket to all_sprites group
+        # create instance of OurFavoriteRocketShip
+        self.rocket = OurFavoriteRocketShip()
+        self.all_sprites.add(self.rocket)  # add rocket to all_sprites group
 
         # Load background in init so it isn't loaded every frame
         self.background = pygame.image.load(
-           "Screens/backgrounds/simulationscreen.png").convert_alpha() #convert_alpha may or may not improve performance
+            # convert_alpha may or may not improve performance
+            "Screens/backgrounds/simulationscreen.png").convert_alpha()
 
     def run(self):
         self.display.blit(self.background, (0, 0))
-        #self.display.fill('orange')
+        # self.display.fill('orange')
 
         # Text with directions
         font = pygame.font.Font(None, 36)
@@ -41,12 +43,14 @@ class Simulation(BaseState):
         if keys[pygame.K_5]:
             self.quit()
 
-        self.rocket.update(keys) # update rocket on keypress
-        self.display.blit(self.rocket.surf, self.rocket.rect) # update screen on keypress
+        self.rocket.update(keys)  # update rocket on keypress
+        # update screen on keypress
+        self.display.blit(self.rocket.surf, self.rocket.rect)
+
 
 class OurFavoriteRocketShip(pygame.sprite.Sprite):
     def __init__(self):
-        super().__init__() 
+        super().__init__()
         self.surf = pygame.Surface((40, 75))
         self.surf.fill((255, 255, 255))
         self.rect = self.surf.get_rect()
@@ -58,12 +62,13 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
     def update(self, pressed_key):
         if not self.is_landed:
             self.downY = self.algos.gravity()  # Update gravity value
-            self.rect.move_ip(0, self.downY) #Moves down on y axis at rate self.downY
+            # Moves down on y axis at rate self.downY
+            self.rect.move_ip(0, self.downY)
 
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
             self.is_landed = True
-            self.rect.bottom = SURFACE # Stop vertical movement
+            self.rect.bottom = SURFACE  # Stop vertical movement
         else:
             self.is_landed = False
             if pressed_key[pygame.K_SPACE]:
