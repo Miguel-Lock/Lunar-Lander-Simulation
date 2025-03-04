@@ -35,13 +35,18 @@ class Simulation(BaseState):
     def run(self):
         self.display.blit(self.background, (0, 0))
 
+
+        info_lines = [
+            f"Speed: {self.rocket.rect.y}",
+            f"Velocity: {self.rocket.rect.y}",
+            f"Fuel Remaining: {self.rocket.rect.y}",
+            f"Engine: {self.rocket.thrust_switch()}"
+        ]
         # Text for rocket info
-        info_text = f"Speed: {self.rocket.rect.y}\nVelocity: {self.rocket.rect.y}\nFuel Remaining: {
-            self.rocket.rect.y}\nEngine: {self.rocket.thrust_switch()}"
-        rocket_info = FONT.render(info_text, True, (255, 255, 255))
-        info_rect = rocket_info.get_rect()
-        info_rect.topleft = (50, 50)
-        self.display.blit(rocket_info, info_rect)
+        line_height = FONT.get_height()
+        for i, line in enumerate(info_lines):
+            line_surface = FONT.render(line, True, (255, 255, 255))
+            self.display.blit(line_surface, (50, 50 + i * line_height))
 
         # Buttons for screen directions
         exit_button = Button(1660, 50, exit_button_img, 1)
