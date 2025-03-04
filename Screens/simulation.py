@@ -1,10 +1,18 @@
 import pygame
 import time  # for delay between landing and results
 from game_state_manager import BaseState
-from pygame.locals import RLEACCEL
-from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE
+# from pygame.locals import RLEACCEL
+from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM
 from algos import MyAlgos
-from gui_code.buttons import Button, backtomenu_button_img, exit_button_img
+from gui_code.buttons import Button, exit_button_img
+
+# importing idle rocket png
+tilapia_idle_img = pygame.image.load(
+    'Screens/rocket_assets/Tilapia.png').convert_alpha()
+
+# importing rocket thrust png
+tilapia_thrust_img = pygame.image.load(
+    'Screens/rocket_assets/TilapiaThrust.png').convert_alpha()
 
 # Simulation screen
 
@@ -27,12 +35,17 @@ class Simulation(BaseState):
     def run(self):
         self.display.blit(self.background, (0, 0))
 
-        # Buttons for screen directions
-        exit_button = Button(1660, 150, exit_button_img, 1)
-        menu_button = Button(1660, 50, backtomenu_button_img, 1)
+        # Text for rocket info
+        info_text = f"Speed: {self.rocket.rect.y}\nVelocity: {self.rocket.rect.y}\nFuel Remaining: {
+            self.rocket.rect.y}\nEngine: {self.rocket.thrust_switch()}"
+        rocket_info = FONT.render(info_text, True, (255, 255, 255))
+        info_rect = rocket_info.get_rect()
+        info_rect.topleft = (50, 50)
+        self.display.blit(rocket_info, info_rect)
 
-        if menu_button.draw() is True:
-            self.gameStateManger.set_state('menu')
+        # Buttons for screen directions
+        exit_button = Button(1660, 50, exit_button_img, 1)
+
         if exit_button.draw() is True:
             self.quit()
 
@@ -46,37 +59,62 @@ class Simulation(BaseState):
         # delays for 3 seconds and then displays results
         if self.rocket.is_landed is True:
             time.sleep(3)
+            self.rocket.reset()
             self.gameStateManger.set_state('results')
 
 
 class OurFavoriteRocketShip(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.surf = pygame.Surface((40, 75))
-        self.surf.fill((255, 255, 255))
+        self.surf = tilapia_idle_img
         self.rect = self.surf.get_rect()
-        self.rect.center = (SCREENWIDTH // 2, SCREENHEIGHT // 8)
+
+        self.rect.centerx = SCREENWIDTH // 2
+        self.rect.bottom = ROCKET_BOTTOM
 
         self.is_landed = False
-        self.algos = MyAlgos()  # this is how we are going to use the algorithms
+        self.is_successful = False  # False if crashed, True otherwise
+        self.algos = MyAlgos()  # this is how we are going to use algorithms
+        self.is_thrust = False
+
+    def thrust_switch(self):
+        switch = " "
+        if self.is_thrust:
+            switch = "ON"
+        if not self.is_thrust:
+            switch = "OFF"
+        return switch
 
     def update(self, pressed_key):
         if not self.is_landed:
-            self.downY = self.algos.gravity()  # Update gravity value
+            # passes boolean so Algos know if thrusters are activated
+            self.downY = self.algos.move_down(pressed_key[pygame.K_SPACE])
             # Moves down on y axis at rate self.downY
             self.rect.move_ip(0, self.downY)
 
+            if pressed_key[pygame.K_SPACE] == 1:
+                self.surf = tilapia_thrust_img
+                self.is_thrust = True
+            else:
+                self.surf = tilapia_idle_img
+                self.is_thrust = False
+
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
+            self.surf = tilapia_idle_img  # reset image to idle
             self.is_landed = True
             self.rect.bottom = SURFACE  # Stop vertical movement
         else:
             self.is_landed = False
-            if pressed_key[pygame.K_SPACE]:
-                self.rect.move_ip(0, -5)
 
         # Keep the rocket from flying off the screen
         if self.rect.top < 0:
             self.rect.top = 0
         if self.rect.bottom > SURFACE:
             self.rect.bottom = SURFACE
+
+    def reset(self):
+        self.is_landed = False
+        self.algos.reset()
+        self.rect.center = (SCREENWIDTH // 2, SCREENHEIGHT // 8)
+        self.surf = tilapia_idle_img  # reset image to idle
