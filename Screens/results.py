@@ -17,11 +17,17 @@ class Results(BaseState):
         menu_button = Button(1660, 50, backtomenu_button_img, 1)
 
         # results text
-        info_text = f"Average Velocity: \nFuel Remaining: \nDid your Rocket Land? Nope.\nOther: (idk what to put here)\n"
-        rocket_info = FONT.render(info_text, True, (255, 255, 255))
-        info_rect = rocket_info.get_rect()
-        info_rect.topleft = (SCREENWIDTH // 2, SCREENHEIGHT // 2)
-        self.display.blit(rocket_info, info_rect)
+        info_lines = [
+            f"Average Velocity: ",
+            f"Fuel Remaining: ",
+            f"Engine: "
+        ]
+        # Text for rocket info
+        line_height = FONT.get_height()
+        for i, line in enumerate(info_lines):
+            line_surface = FONT.render(line, True, (255, 255, 255))
+            self.display.blit(line_surface, ((SCREENWIDTH//2.5),
+                              (SCREENWIDTH//3.5) + i * line_height))
 
         if menu_button.draw() is True:
             self.gameStateManger.set_state('menu')

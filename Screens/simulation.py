@@ -35,7 +35,6 @@ class Simulation(BaseState):
     def run(self):
         self.display.blit(self.background, (0, 0))
 
-
         info_lines = [
             f"Speed: {self.rocket.rect.y}",
             f"Velocity: {self.rocket.rect.y}",
