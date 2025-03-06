@@ -1,4 +1,4 @@
-from constants import GRAVITY, MMOON, RMOON, FORCEOFTHRUST, SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, VERTICAL_DISTANCE, FPS
+from constants import GRAVITY, MMOON, RMOON, FORCEOFTHRUST, SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, VERTICAL_DISTANCE, FPS, METERPERPX, PXPERMETER
 import time
 
 
@@ -67,7 +67,7 @@ class MyAlgos:
     # this is a 100 N to 1 Kg/s burn
     def fuelBurn(self, MfAtF, dt):
         # SOMETHING IS WRONG HERE!!!!!!! The rEtURN NUMBER SHOULD NOT BE SO BIG!
-        return -1000000 * (MfAtF * dt)
+        return -1500000 * (MfAtF * dt)
 
     # Average acceleration at time t
     # Ft = thrust appled now
@@ -101,16 +101,8 @@ class MyAlgos:
     # thus 783px = 100,000
     # 1px = 128m
     def pixelMeterConversion(self, meters):
-        return (meters * VERTICAL_DISTANCE / 100000)
-
-    def altitudeToPixel(self, altitude_M, initial_altitude=100000):
-        # calculates the pixel range and meters per pixel
-        Pixel_range = SURFACE - ROCKET_BOTTOM
-        m_per_pixel = initial_altitude / Pixel_range  # 127.74 metters per px
-        # determines how many pixels the altitude spans
-        pixel_offset = altitude_M / m_per_pixel
-        pixel_y = SURFACE - pixel_offset
-        return pixel_y
+        #return (meters * VERTICAL_DISTANCE) / 100000
+        return meters / METERPERPX
 
     def reset(self):
         self.__init__()
