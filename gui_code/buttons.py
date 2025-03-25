@@ -8,6 +8,8 @@ history_button_img = pygame.image.load(
     'gui_code/buttons/history_button.png').convert_alpha()
 exit_button_img = pygame.image.load(
     'gui_code/buttons/exit_button.png').convert_alpha()
+backtomenu_button_img = pygame.image.load(
+    'gui_code/buttons/BacktoMenu.png').convert_alpha()
 
 # button class to declare button instances
 
@@ -29,7 +31,7 @@ class Button():
 
     def draw(self):
 
-        # the returned variable to be used for every button instance
+        # the return variable to be used for every button instance
         action = False
 
         # get mouse position
