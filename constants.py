@@ -1,9 +1,10 @@
 import pygame  # import pygame to initialize a global font variable
 
 pygame.init()  # must initialize pygame
-
-SCREENWIDTH = 1920
-SCREENHEIGHT = 1080
+# Original ScreenWidth: 1920
+SCREENWIDTH = 1280
+# Original ScreenHeight: 1080
+SCREENHEIGHT = 720
 SURFACE = SCREENHEIGHT - (SCREENHEIGHT // 20)
 ROCKET_BOTTOM = SCREENHEIGHT // 4
 VERTICAL_DISTANCE = SURFACE - ROCKET_BOTTOM

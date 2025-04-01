@@ -6,9 +6,11 @@
   fuelRemaining integer,
   totalWeight integer,
   passengersAmt integer,
-  cargoWght integer
+  cargoWght integer,
   attemptTime float,
   attemptSuccess boolean,
   failureReason varchar(255))*/
 
-  SELECT * FROM Attempts
+/*DROP Table Attempts*/
+
+SELECT * FROM Attempts
