@@ -13,6 +13,17 @@ backtomenu_button_img = pygame.image.load(
     'gui_code/buttons/BacktoMenu.png').convert_alpha()
 button_img = pygame.image.load(
     'gui_code/buttons/default_button.png').convert_alpha()
+yes_img = pygame.image.load(
+    'gui_code/buttons/yes.png').convert_alpha()
+no_img = pygame.image.load(
+    'gui_code/buttons/no.png').convert_alpha()
+one_img = pygame.image.load(
+    'gui_code/buttons/1.png').convert_alpha()
+two_img = pygame.image.load(
+    'gui_code/buttons/2.png').convert_alpha()
+three_img = pygame.image.load(
+    'gui_code/buttons/3.png').convert_alpha()
+
 
 # button class to declare button instances
 class Button():
