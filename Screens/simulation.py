@@ -23,9 +23,7 @@ class Simulation(BaseState):
         self.display = screen
         self.all_sprites = pygame.sprite.Group()
 
-        # create instance of OurFavoriteRocketShip
-        self.rocket = OurFavoriteRocketShip()
-        self.all_sprites.add(self.rocket)  # add rocket to all_sprites group
+        self.rocket = None
 
         # Load background in init so it isn't loaded every frame
         self.background = pygame.image.load(
@@ -33,6 +31,15 @@ class Simulation(BaseState):
             "Screens/backgrounds/simulationscreen.png").convert_alpha()
 
     def run(self):
+        # initialize rocket if it doesn't exist
+        # moved inside run function to account for extra_mass
+        if self.rocket is None:
+            # Get extra mass from gameStateManger if it exists
+            extra_mass = getattr(self.gameStateManger, 'extra_mass', 0)
+            # create instance of OurFavoriteRocketShip
+            self.rocket = OurFavoriteRocketShip(extra_mass=extra_mass)
+            self.all_sprites.add(self.rocket)
+
         self.display.blit(self.background, (0, 0))
 
         info_lines = [
@@ -68,7 +75,7 @@ class Simulation(BaseState):
 
 
 class OurFavoriteRocketShip(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, extra_mass=0):
         super().__init__()
         self.surf = tilapia_idle_img
         self.rect = self.surf.get_rect()
@@ -78,7 +85,7 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
 
         self.is_landed = False
         self.is_successful = False  # False if crashed, True otherwise
-        self.algos = MyAlgos()  # this is how we are going to use algorithms
+        self.algos = MyAlgos(extra_mass)
         self.is_thrust = False
         self.downY = 0
 
