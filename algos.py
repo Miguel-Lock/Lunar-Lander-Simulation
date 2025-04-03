@@ -3,10 +3,10 @@ import time
 
 
 class MyAlgos:
-    def __init__(self):
+    def __init__(self, extra_mass=0):
         # starting values
         # mass
-        self.mass = 3000
+        self.mass = 3000 + extra_mass
         self.newMass = 0
         # velocity: m/s
         self.velocity = 100
