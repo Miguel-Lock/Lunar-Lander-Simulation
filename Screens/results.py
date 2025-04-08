@@ -30,9 +30,16 @@ class Results(BaseState):
 
         # results text
         info_lines = [
-            f"Average Velocity: ",
-            f"Fuel Remaining: {fuelRmn}",
-            f"Engine: "
+            # shipHealth, totalFuel, fuelAmtUsed, fuelRemaining, totalWeight, passengersAmt, cargoWght, attemptTime, attemptSuccess, failureReason
+            f"Ship Health: 100 HP",
+            f"Total Fuel: 100 Gal",
+            f"Fuel Remaining: {fuelRmn} Gal",
+            f"Total Weight: 342 lbs ",
+            f"Total Passenger Weight: 165 lbs",
+            f"Total Cargo Weight: 177 lbs",
+            f"Attempt Time: 2:21",
+            f"Attempt Success?: Yes",
+            f"Failure Reason: N/A",
         ]
         # Text for rocket info
         line_height = FONT.get_height()
