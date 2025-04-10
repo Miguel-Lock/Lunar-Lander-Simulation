@@ -15,4 +15,6 @@ class Customize(BaseState):
         customize_start_button = Button(1660, 975, start_button_img, 1)
 
         if customize_start_button.draw() is True:
+            extra_mass = 10
+            self.gameStateManger.extra_mass = extra_mass
             self.gameStateManger.set_state('simulation')
