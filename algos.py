@@ -59,7 +59,7 @@ class MyAlgos:
     # h = height in meters
     # g = moon gravity
     # Mm = mass of moon
-    # Rm = radius of moon
+    # Rm = radius of moon-
     def gMoonAtH(self, h):
         return (GRAVITY * MMOON) / ((RMOON + h) ** 2)
 
