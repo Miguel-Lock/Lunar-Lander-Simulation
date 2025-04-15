@@ -1,5 +1,6 @@
 import pygame
 import time  # for delay between landing and results
+import sqlite3 # for database entries
 from game_state_manager import BaseState
 # from pygame.locals import RLEACCEL
 from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX
@@ -69,6 +70,37 @@ class Simulation(BaseState):
         # after rocket lands
         # delays for 3 seconds and then displays results
         if self.rocket.is_landed is True:
+            # connects to database OR creates one if none is
+            conn = sqlite3.connect('lunarlander.db')
+            # creates cursor object to create queries
+            cursor = conn.cursor()
+            # creates table for DB if database does not exist yet
+            cursor.execute(
+                '''CREATE TABLE IF NOT EXISTS Attempts(
+                attemptNum INTEGER PRIMARY KEY NOT NULL,
+                shipHealth INTEGER,
+                totalFuel INTEGER,
+                fuelAmtUsed INTEGER,
+                fuelRemaining INTEGER,
+                totalWeight INTEGER,
+                passengersAmt INTEGER,
+                cargoWght INTEGER,
+                attemptTime FLOAT,
+                attemptSuccess BOOLEAN,
+                failureReason TEXT)''')
+            # DISCLAIMER: Table inserts done in form:
+            # (attemptNum, shipHealth, totalFuel, fuelAmtUsed, fuelRemaining, totalWeight, passengersAmt, cargoWght, attemptTime, attemptSuccess, failureReason)
+            attemptQuery = "INSERT INTO Attempts VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            # run check to make sure attemptNum is equal to the next entry in database
+            # this query returns number of attempts already in database
+            cursor.execute('SELECT COUNT(attemptNum) FROM Attempts') 
+            currentIteration = cursor.fetchone()
+            values = (currentIteration[0]+1,100,100,56,44,200,150,50,33,True,None)
+            # takes both the query and values and combines them to make a valid sql query to
+            # insert post-flight information into the database
+            cursor.execute(attemptQuery,values)
+            conn.commit()
+            conn.close()
             time.sleep(3)
             self.rocket.reset()
             self.gameStateManger.set_state('results')
