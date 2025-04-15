@@ -50,3 +50,6 @@ You may need to resolve merge conflicts.
 
 ### Google Drive Link
 https://drive.google.com/drive/u/1/folders/1-EdQxmB7Q2upuqa-NT5YqIYMSa14MXLQ
+
+### Primary resource for backend structure:
+https://www.youtube.com/watch?v=r0ixaTQxsUI&t=310s
