@@ -2,4 +2,3 @@
 *.pyc
 __pycache__/
 lunarlander.db
-constants.py

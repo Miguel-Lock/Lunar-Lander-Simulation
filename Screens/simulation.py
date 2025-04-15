@@ -70,10 +70,24 @@ class Simulation(BaseState):
         # after rocket lands
         # delays for 3 seconds and then displays results
         if self.rocket.is_landed is True:
-            # connects to database
+            # connects to database OR creates one if none is
             conn = sqlite3.connect('lunarlander.db')
             # creates cursor object to create queries
             cursor = conn.cursor()
+            # creates table for DB if database does not exist yet
+            cursor.execute(
+                '''CREATE TABLE IF NOT EXISTS Attempts(
+                attemptNum INTEGER PRIMARY KEY NOT NULL,
+                shipHealth INTEGER,
+                totalFuel INTEGER,
+                fuelAmtUsed INTEGER,
+                fuelRemaining INTEGER,
+                totalWeight INTEGER,
+                passengersAmt INTEGER,
+                cargoWght INTEGER,
+                attemptTime FLOAT,
+                attemptSuccess BOOLEAN,
+                failureReason TEXT)''')
             # DISCLAIMER: Table inserts done in form:
             # (attemptNum, shipHealth, totalFuel, fuelAmtUsed, fuelRemaining, totalWeight, passengersAmt, cargoWght, attemptTime, attemptSuccess, failureReason)
             attemptQuery = "INSERT INTO Attempts VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
@@ -86,6 +100,7 @@ class Simulation(BaseState):
             # insert post-flight information into the database
             cursor.execute(attemptQuery,values)
             conn.commit()
+            conn.close()
             time.sleep(3)
             self.rocket.reset()
             self.gameStateManger.set_state('results')

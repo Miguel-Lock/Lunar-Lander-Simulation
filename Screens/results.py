@@ -7,8 +7,8 @@ from constants import FONT, SCREENHEIGHT, SCREENWIDTH
 
 # Results screen
 
-
 class Results(BaseState):
+    resultsOutput = False
     def run(self):
         self.background = pygame.image.load(
             "Screens/backgrounds/resultbackground.png").convert_alpha()
@@ -16,18 +16,27 @@ class Results(BaseState):
 
         exit_button = Button(1660, 150, exit_button_img, 1)
         menu_button = Button(1660, 50, backtomenu_button_img, 1)
-
         connDB = sqlite3.connect('lunarlander.db')
         cursor = connDB.cursor()
-        cursor.execute('SELECT COUNT(attemptNum) FROM Attempts') 
-        currentIteration = cursor.fetchone()
+        cursor.execute('SELECT COUNT(attemptNum) FROM Attempts') # gives num of tuples
+        currentIteration = cursor.fetchone() # var for the most recent tuple
         newCurr = int(currentIteration[0])
         # grabs fuel remaining for current attempt
         cursor.execute(f"SELECT fuelRemaining FROM Attempts WHERE attemptNum = {newCurr}")
         curFuelRmn = cursor.fetchone()
         fuelRmn = curFuelRmn[0]
         # update for other database variables in the future
-
+        # output last 5 attempts by taking tuple amounts, and placing limiter when attempt = 0
+        if Results.resultsOutput == False:
+            i = newCurr
+            for newCurr in range(i,i-5,-1):
+                if newCurr <= 0:
+                    break
+                else:
+                    cursor.execute(f"SELECT * FROM Attempts WHERE attemptNum = {newCurr}")
+                    outputTuple = cursor.fetchall()
+                    print(outputTuple)
+            Results.resultsOutput = True
         # results text
         info_lines = [
             # shipHealth, totalFuel, fuelAmtUsed, fuelRemaining, totalWeight, passengersAmt, cargoWght, attemptTime, attemptSuccess, failureReason
@@ -41,6 +50,8 @@ class Results(BaseState):
             f"Attempt Success?: Yes",
             f"Failure Reason: N/A",
         ]
+        connDB.commit()
+        connDB.close()
         # Text for rocket info
         line_height = FONT.get_height()
         for i, line in enumerate(info_lines):
