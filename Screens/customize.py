@@ -31,13 +31,10 @@ class Customize(BaseState):
         # handle different input sections according to current state
         if self.curr_state == "rover":
             self.rover_sec()
-            time.sleep(0.5)
         elif self.curr_state == "astronauts":
             self.astro_sec()
-            time.sleep(0.5)
         elif self.curr_state == "instrument":
             self.instrument_sec()
-            time.sleep(0.5)
         elif self.curr_state == "start":
             self.start_sec()
 
@@ -52,17 +49,17 @@ class Customize(BaseState):
     def rover_sec(self):
         # is there a rover?
         rover_text = FONT.render('Is there a Rover?', True, (255, 255, 255))
-        self.display.blit(rover_text, (850, 400))
+        self.display.blit(rover_text, (435, 350))
 
-        yes_button = Button(850, 550, yes_img, 1)
-        no_button = Button(850, 650, no_img, 1)
+        yes_button = Button(450, 450, yes_img, 1)
+        no_button = Button(450, 550, no_img, 1)
 
         if yes_button.draw():
-            isRover = True
+            self.isRover = True
             print("Yes")
             self.curr_state = "astronauts"
         elif no_button.draw():
-            isRover = False
+            self.isRover = False
             print("No")
             self.curr_state = "astronauts"
     
@@ -70,11 +67,18 @@ class Customize(BaseState):
     def astro_sec(self):
         # how many astronauts from (1 - 3)
         astronaut_text = FONT.render('How many Astronauts? (1-3)', True, (255, 255, 255))
-        self.display.blit(astronaut_text, (825, 400))
+        self.display.blit(astronaut_text, (765, 350))
 
-        one_button = Button(850, 550, one_img, 1)
-        two_button = Button(950, 550, two_img, 1)
-        three_button = Button(1050, 550, three_img, 1)
+        if self.isRover:
+            rover_text = FONT.render('Rover = Yes', True, (255, 255, 255))
+            self.display.blit(rover_text, (435, 350))
+        else:
+            rover_text = FONT.render('Rover = No', True, (255, 255, 255))
+            self.display.blit(rover_text, (435, 350))
+
+        one_button = Button(950, 650, one_img, 1)
+        two_button = Button(1100, 550, two_img, 1)
+        three_button = Button(1250, 550, three_img, 1)
 
         if one_button.draw():
            self.astronautAmt = 1
@@ -95,9 +99,15 @@ class Customize(BaseState):
         instrument_text = FONT.render('How many Instruments? (0-300)', True, (255, 255, 255))
         self.display.blit(instrument_text, (800, 400))
 
+        if self.isRover:
+            rover_text = FONT.render('Rover = Yes', True, (255, 255, 255))
+            self.display.blit(rover_text, (435, 350))
+        else:
+            rover_text = FONT.render('Rover = No', True, (255, 255, 255))
+            self.display.blit(rover_text, (435, 350))
+
         yes_button = Button(850, 550, yes_img, 1)
         if yes_button.draw():
-            isRover = True
             print("Yes")
             self.curr_state = "start"
 
