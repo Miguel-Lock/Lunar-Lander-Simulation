@@ -21,7 +21,7 @@ class Game:
         # All screens
         self.menu = Menu(SCREEN, self.gameStateManger)
         self.customize = Customize(SCREEN, self.gameStateManger)
-        self.history = History(SCREEN, self.gameStateManger)
+        self.history = Results(SCREEN, self.gameStateManger)
         self.simulation = Simulation(SCREEN, self.gameStateManger)
         self.results = Results(SCREEN, self.gameStateManger)
 
