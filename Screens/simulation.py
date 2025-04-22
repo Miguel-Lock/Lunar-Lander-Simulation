@@ -94,7 +94,7 @@ class Simulation(BaseState):
             cursor.execute(attemptQuery,values)
             conn.commit()
             conn.close()
-            time.sleep(3)
+            time.sleep(1)
             self.rocket.reset()
             self.gameStateManger.set_state('results')
 

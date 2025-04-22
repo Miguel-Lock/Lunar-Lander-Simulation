@@ -10,14 +10,16 @@ from constants import FONT, SCREENHEIGHT, SCREENWIDTH
 class Results(BaseState):
     resultsOutput = False
 
-    def draw_text(self, text, x, y, color="white", font=FONT):
+    def draw_text(self, text, x, y, parse=True, color="white", font=FONT):
         """Draw text at a specific position on the screen"""
-        text_surface = font.render(text[:10], True, color)
+        if parse:
+            text = text[:10]
+        text_surface = font.render(text, True, color)
         self.display.blit(text_surface, (x, y))
 
     def run(self):
         self.background = pygame.image.load(
-            "Screens/backgrounds/resultswithbackground.png").convert_alpha()
+            "Screens/backgrounds/resultswithgrid.png").convert_alpha()
         self.display.blit(self.background, (0, 0))
 
         exit_button = Button(1660, 150, exit_button_img, 1)
@@ -53,7 +55,13 @@ class Results(BaseState):
                     if row_data:
                         results_data.append(row_data)
 
+        titles = ["Attemp #", "Time", "Starting Wt", "Starting Fuel", "Ending Fuel", "Success?"]
         
+        for i in range(len(titles)):
+            x = 485 + (i * 223)
+            y = 310
+            self.draw_text(titles[i], x, y, parse=False)
+
         # Display data section - only runs if we have data
         x_start = 500
         y_start = 410
