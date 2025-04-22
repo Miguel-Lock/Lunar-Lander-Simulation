@@ -24,37 +24,52 @@ class Results(BaseState):
         menu_button = Button(1660, 50, backtomenu_button_img, 1)
         connDB = sqlite3.connect('lunarlander.db')
         cursor = connDB.cursor()
-        cursor.execute('SELECT COUNT(attemptNum) FROM Attempts') # gives num of tuples
-        currentIteration = cursor.fetchone() # var for the most recent tuple
-        newCurr = int(currentIteration[0])
-        # grabs fuel remaining for current attempt
-        cursor.execute(f"SELECT fuelRemaining FROM Attempts WHERE attemptNum = {newCurr}")
-        curFuelRmn = cursor.fetchone()
-        fuelRmn = curFuelRmn[0]
-        # update for other database variables in the future
-        # output last 5 attempts by taking tuple amounts, and placing limiter when attempt = 0
-        if Results.resultsOutput == False:
-            i = newCurr
-            for newCurr in range(i,i-5,-1):
-                if newCurr <= 0:
-                    break
-                else:
-                    cursor.execute(f"SELECT * FROM Attempts WHERE attemptNum = {newCurr}")
-                    outputTuple = cursor.fetchall()
-                    print(outputTuple)
-            Results.resultsOutput = True
+        
+        # Safely check if the table exists before attempting to query it
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Attempts'")
+        table_exists = cursor.fetchone() is not None
+        
+        results_data = []
+        
+        if table_exists:
+            cursor.execute('SELECT COUNT(attemptNum) FROM Attempts')
+            currentIteration = cursor.fetchone()
+            newCurr = int(currentIteration[0])
+            
+            if newCurr > 0:
+                # Get fuel remaining for current attempt
+                cursor.execute(f"SELECT fuelRemaining FROM Attempts WHERE attemptNum = {newCurr}")
+                curFuelRmn = cursor.fetchone()
+                if curFuelRmn:  # Check that we got a result
+                    fuelRmn = curFuelRmn[0]
+                
+                # Get lower bound to avoid negative attempt numbers
+                lower_bound = max(1, newCurr - 4)
+                
+                # Loop through attempts from newest to oldest, but never below 1
+                for attempt_num in range(newCurr, lower_bound - 1, -1):
+                    cursor.execute(f"SELECT * FROM Attempts WHERE attemptNum = {attempt_num}")
+                    row_data = cursor.fetchone()
+                    if row_data:
+                        results_data.append(row_data)
 
+        
+        # Display data section - only runs if we have data
         x_start = 500
         y_start = 410
         x_spacing = 223
         y_spacing = 100
 
-        for i in range(6):  # 6 columns
-            x = x_start + (i * x_spacing)
-            
-            for j in range(5):  # 5 rows 
+        # Display data in grid
+        for j in range(min(len(results_data), 5)): 
+            row = results_data[j]
+            for i in range(min(len(row), 6)):
+                x = x_start + (i * x_spacing)
                 y = y_start + (j * y_spacing)
-                self.draw_text("MISSION STATISTICS", x, y)
+                
+                # Convert to string and display the data
+                if row[i] is not None:
+                    self.draw_text(str(row[i]), x, y)
 
         connDB.commit()
         connDB.close()

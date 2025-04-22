@@ -78,24 +78,17 @@ class Simulation(BaseState):
             cursor.execute(
                 '''CREATE TABLE IF NOT EXISTS Attempts(
                 attemptNum INTEGER PRIMARY KEY NOT NULL,
-                shipHealth INTEGER,
-                totalFuel INTEGER,
-                fuelAmtUsed INTEGER,
-                fuelRemaining INTEGER,
-                totalWeight INTEGER,
-                passengersAmt INTEGER,
-                cargoWght INTEGER,
                 attemptTime FLOAT,
-                attemptSuccess BOOLEAN,
-                failureReason TEXT)''')
-            # DISCLAIMER: Table inserts done in form:
-            # (attemptNum, shipHealth, totalFuel, fuelAmtUsed, fuelRemaining, totalWeight, passengersAmt, cargoWght, attemptTime, attemptSuccess, failureReason)
-            attemptQuery = "INSERT INTO Attempts VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                totalWeight INTEGER,
+                totalFuel INTEGER,
+                fuelRemaining INTEGER,
+                attemptSuccess BOOLEAN)''')
+            attemptQuery = "INSERT INTO Attempts VALUES (?, ?, ?, ?, ?, ?)"
             # run check to make sure attemptNum is equal to the next entry in database
             # this query returns number of attempts already in database
             cursor.execute('SELECT COUNT(attemptNum) FROM Attempts') 
             currentIteration = cursor.fetchone()
-            values = (currentIteration[0]+1,100,100,56,44,200,150,50,33,True,None)
+            values = (currentIteration[0]+1,100,100,56,44,True)
             # takes both the query and values and combines them to make a valid sql query to
             # insert post-flight information into the database
             cursor.execute(attemptQuery,values)
