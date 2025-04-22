@@ -9,9 +9,15 @@ from constants import FONT, SCREENHEIGHT, SCREENWIDTH
 
 class Results(BaseState):
     resultsOutput = False
+
+    def draw_text(self, text, x, y, color="white", font=FONT):
+        """Draw text at a specific position on the screen"""
+        text_surface = font.render(text[:10], True, color)
+        self.display.blit(text_surface, (x, y))
+
     def run(self):
         self.background = pygame.image.load(
-            "Screens/backgrounds/resultbackground.png").convert_alpha()
+            "Screens/backgrounds/resultswithbackground.png").convert_alpha()
         self.display.blit(self.background, (0, 0))
 
         exit_button = Button(1660, 150, exit_button_img, 1)
@@ -37,27 +43,21 @@ class Results(BaseState):
                     outputTuple = cursor.fetchall()
                     print(outputTuple)
             Results.resultsOutput = True
-        # results text
-        info_lines = [
-            # shipHealth, totalFuel, fuelAmtUsed, fuelRemaining, totalWeight, passengersAmt, cargoWght, attemptTime, attemptSuccess, failureReason
-            f"Ship Health: 100 HP",
-            f"Total Fuel: 100 Gal",
-            f"Fuel Remaining: {fuelRmn} Gal",
-            f"Total Weight: 342 lbs ",
-            f"Total Passenger Weight: 165 lbs",
-            f"Total Cargo Weight: 177 lbs",
-            f"Attempt Time: 2:21",
-            f"Attempt Success?: Yes",
-            f"Failure Reason: N/A",
-        ]
+
+        x_start = 500
+        y_start = 410
+        x_spacing = 223
+        y_spacing = 100
+
+        for i in range(6):  # 6 columns
+            x = x_start + (i * x_spacing)
+            
+            for j in range(5):  # 5 rows 
+                y = y_start + (j * y_spacing)
+                self.draw_text("MISSION STATISTICS", x, y)
+
         connDB.commit()
         connDB.close()
-        # Text for rocket info
-        line_height = FONT.get_height()
-        for i, line in enumerate(info_lines):
-            line_surface = FONT.render(line, True, (255, 255, 255))
-            self.display.blit(line_surface, ((SCREENWIDTH//2.5),
-                              (SCREENWIDTH//3.5) + i * line_height))
 
         if menu_button.draw() is True:
             self.gameStateManger.set_state('menu')
