@@ -2,8 +2,8 @@ import pygame
 import time
 from game_state_manager import BaseState
 from constants import SCREENWIDTH, SCREENHEIGHT, FONT, SCREEN
-from gui_code.buttons import Button, backtomenu_button_img, start_button_img, yes_img, no_img, one_img, two_img, three_img, ten_img, fifty_img, hundred_img
-from gui_code.buttons import InputBox
+from gui_code.buttons import Button, backtomenu_button_img, start_button_img, yes_img, no_img
+from gui_code.buttons import one_img, two_img, three_img, ten_img, fifty_img, hundred_img
 
 
 class Customize(BaseState):
