@@ -1,5 +1,6 @@
 import pygame
 import time  # for delay between landing and results
+import sqlite3 # for database entries
 from game_state_manager import BaseState
 # from pygame.locals import RLEACCEL
 from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX
@@ -23,9 +24,7 @@ class Simulation(BaseState):
         self.display = screen
         self.all_sprites = pygame.sprite.Group()
 
-        # create instance of OurFavoriteRocketShip
-        self.rocket = OurFavoriteRocketShip()
-        self.all_sprites.add(self.rocket)  # add rocket to all_sprites group
+        self.rocket = None
 
         # Load background in init so it isn't loaded every frame
         self.background = pygame.image.load(
@@ -33,6 +32,15 @@ class Simulation(BaseState):
             "Screens/backgrounds/simulationscreen.png").convert_alpha()
 
     def run(self):
+        # initialize rocket if it doesn't exist
+        # moved inside run function to account for extra_mass
+        if self.rocket is None:
+            # Get extra mass from gameStateManger if it exists
+            extra_mass = getattr(self.gameStateManger, 'extra_mass', 0)
+            # create instance of OurFavoriteRocketShip
+            self.rocket = OurFavoriteRocketShip(extra_mass=extra_mass)
+            self.all_sprites.add(self.rocket)
+
         self.display.blit(self.background, (0, 0))
 
         info_lines = [
@@ -62,13 +70,37 @@ class Simulation(BaseState):
         # after rocket lands
         # delays for 3 seconds and then displays results
         if self.rocket.is_landed is True:
-            time.sleep(3)
+            # connects to database OR creates one if none is
+            conn = sqlite3.connect('lunarlander.db')
+            # creates cursor object to create queries
+            cursor = conn.cursor()
+            # creates table for DB if database does not exist yet
+            cursor.execute(
+                '''CREATE TABLE IF NOT EXISTS Attempts(
+                attemptNum INTEGER PRIMARY KEY NOT NULL,
+                attemptTime FLOAT,
+                totalWeight INTEGER,
+                totalFuel INTEGER,
+                fuelRemaining INTEGER,
+                attemptSuccess BOOLEAN)''')
+            attemptQuery = "INSERT INTO Attempts VALUES (?, ?, ?, ?, ?, ?)"
+            # run check to make sure attemptNum is equal to the next entry in database
+            # this query returns number of attempts already in database
+            cursor.execute('SELECT COUNT(attemptNum) FROM Attempts') 
+            currentIteration = cursor.fetchone()
+            values = (currentIteration[0]+1,100,100,56,44,True)
+            # takes both the query and values and combines them to make a valid sql query to
+            # insert post-flight information into the database
+            cursor.execute(attemptQuery,values)
+            conn.commit()
+            conn.close()
+            time.sleep(1)
             self.rocket.reset()
             self.gameStateManger.set_state('results')
 
 
 class OurFavoriteRocketShip(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, extra_mass=0):
         super().__init__()
         self.surf = tilapia_idle_img
         self.rect = self.surf.get_rect()
@@ -78,7 +110,7 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
 
         self.is_landed = False
         self.is_successful = False  # False if crashed, True otherwise
-        self.algos = MyAlgos()  # this is how we are going to use algorithms
+        self.algos = MyAlgos(extra_mass)
         self.is_thrust = False
         self.downY = 0
 
