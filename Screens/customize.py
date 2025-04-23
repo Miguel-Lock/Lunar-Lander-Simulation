@@ -22,6 +22,9 @@ class Customize(BaseState):
         self.isRover = False
         self.astronautAmt = 0
         self.instrumentAmt = 0
+
+        self.extraMass = 0
+
         # ALERT ALERT ALERT
         # ALERT ALERT ALERT
         # ALERT ALERT ALERT
@@ -62,11 +65,12 @@ class Customize(BaseState):
 
         if yes_button.draw():
             self.isRover = True # FOR MIGUEL AND MATT
-            print("Yes")
+            self.extraMass += 200
+            print("Add Rover, +200kg")
             self.curr_state = "astronauts"
         elif no_button.draw():
             self.isRover = False
-            print("No")
+            print("No Rover")
             self.curr_state = "astronauts"
     
 
@@ -81,12 +85,12 @@ class Customize(BaseState):
             rover_text = FONT.render('Rover = Yes', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
             # THIS NEEDS TO DISPLAY THE AMOUNT OF POUNDS ADDED ONTO THE ROCKET
-            rover_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            rover_info = FONT.render('Adds 200 kg', True, (255, 255, 255))
             self.display.blit(rover_info, (435, 400))
         else:
             rover_text = FONT.render('Rover = No', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
-            rover_info = FONT.render('Adds 0 lbs', True, (255, 255, 255))
+            rover_info = FONT.render('Adds 0 kg', True, (255, 255, 255))
             self.display.blit(rover_info, (435, 400))
 
 
@@ -96,15 +100,18 @@ class Customize(BaseState):
 
         if one_button.draw():
            self.astronautAmt = 1    # FOR MIGUEL AND MATT
-           print("Chose 1 Astronaut")
+           self.extraMass += 120
+           print("Chose 1 Astronaut, adds 120kg")
            self.curr_state = "instrument"
         elif two_button.draw():
            self.astronautAmt = 2
-           print("Chose 2 Astronauts")
+           self.extraMass += 240
+           print("Chose 2 Astronauts, adds 240kg")
            self.curr_state = "instrument"
         elif three_button.draw():
            self.astronautAmt = 3
-           print("Chose 3 Astronauts")
+           self.extraMass += 360
+           print("Chose 3 Astronauts, adds 360kg")
            self.curr_state = "instrument"
 
     
@@ -117,28 +124,28 @@ class Customize(BaseState):
         if self.isRover:
             rover_text = FONT.render('Rover = Yes', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
-            rover_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            rover_info = FONT.render('Adds 200 kg', True, (255, 255, 255))
             self.display.blit(rover_info, (435, 400))
         else:
             rover_text = FONT.render('Rover = No', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
-            rover_info = FONT.render('Adds 0 lbs', True, (255, 255, 255))
+            rover_info = FONT.render('Adds 0 kg', True, (255, 255, 255))
             self.display.blit(rover_info, (435, 400))
 
         if self.astronautAmt == 1:
             astro_text = FONT.render('1 Astronaut', True, (255, 255, 255))
             self.display.blit(astro_text, (765, 350))
-            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            astro_info = FONT.render('Adds 120 kg', True, (255, 255, 255))
             self.display.blit(astro_info, (765, 400))
         elif self.astronautAmt == 2:
             astro_text = FONT.render('2 Astronauts', True, (255, 255, 255))
             self.display.blit(astro_text, (765, 350))
-            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            astro_info = FONT.render('Adds 240 kg', True, (255, 255, 255))
             self.display.blit(astro_info, (765, 400))
         elif self.astronautAmt == 3:
             astro_text = FONT.render('3 Astronauts', True, (255, 255, 255))
             self.display.blit(astro_text, (765, 350))
-            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            astro_info = FONT.render('Adds 360 kg', True, (255, 255, 255))
             self.display.blit(astro_info, (765, 400))
 
         ten_button = Button(1350, 450, ten_img, 1)
@@ -146,15 +153,18 @@ class Customize(BaseState):
         hundred_button = Button(1350, 650, hundred_img, 1)
         if ten_button.draw():
             self.instrumentAmt = 10 # FOR MIGUEL AND MATT
-            print("Chose 10")
+            self.extraMass += 50
+            print("Chose 10, adds 50kg")
             self.curr_state = "start"
         elif fifty_button.draw():
             self.instrumentAmt = 50
-            print("Chose 50")
+            self.extraMass += 250
+            print("Chose 50, adds 250kg")
             self.curr_state = "start"
         elif hundred_button.draw():
             self.instrumentAmt = 100
-            print("Chose 100")
+            self.extraMass += 500
+            print("Chose 100, adds 500kg")
             self.curr_state = "start"
 
 
@@ -166,53 +176,53 @@ class Customize(BaseState):
         if self.isRover:
             rover_text = FONT.render('Rover = Yes', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
-            rover_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            rover_info = FONT.render('Adds 200 kg', True, (255, 255, 255))
             self.display.blit(rover_info, (435, 400))
         else:
             rover_text = FONT.render('Rover = No', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
-            rover_info = FONT.render('Adds 0 lbs', True, (255, 255, 255))
+            rover_info = FONT.render('Adds 0 kg', True, (255, 255, 255))
             self.display.blit(rover_info, (435, 400))
 
         if self.astronautAmt == 1:
             astro_text = FONT.render('1 Astronaut', True, (255, 255, 255))
             self.display.blit(astro_text, (765, 350))
-            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            astro_info = FONT.render('Adds 120 kg', True, (255, 255, 255))
             self.display.blit(astro_info, (765, 400))
         elif self.astronautAmt == 2:
             astro_text = FONT.render('2 Astronauts', True, (255, 255, 255))
             self.display.blit(astro_text, (765, 350))
-            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            astro_info = FONT.render('Adds 240 kg', True, (255, 255, 255))
             self.display.blit(astro_info, (765, 400))
         elif self.astronautAmt == 3:
             astro_text = FONT.render('3 Astronauts', True, (255, 255, 255))
             self.display.blit(astro_text, (765, 350))
-            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            astro_info = FONT.render('Adds 360 kg', True, (255, 255, 255))
             self.display.blit(astro_info, (765, 400))
 
        
         if self.instrumentAmt == 10:
             inst_text = FONT.render('10 instruments on board', True, (255, 255, 255))
             self.display.blit(inst_text, (1150, 350))
-            inst_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            inst_info = FONT.render('Adds 50 kg', True, (255, 255, 255))
             self.display.blit(inst_info, (1150, 400))
         elif self.instrumentAmt == 50:
             inst_text = FONT.render('50 instruments on board', True, (255, 255, 255))
             self.display.blit(inst_text, (1150, 350))
-            inst_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            inst_info = FONT.render('Adds 250 kg', True, (255, 255, 255))
             self.display.blit(inst_info, (1150, 400))
         elif self.instrumentAmt == 100:
             inst_text = FONT.render('100 instruments on board', True, (255, 255, 255))
             self.display.blit(inst_text, (1150, 350))
-            inst_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            inst_info = FONT.render('Adds 500 kg', True, (255, 255, 255))
             self.display.blit(inst_info, (1150, 400))
 
 
         # displays start button to start
         customize_start_button = Button(1660, 975, start_button_img, 1)
         if customize_start_button.draw() is True:
-            extra_mass = 10
-            self.gameStateManger.extra_mass = extra_mass
+            print(f'Adding {self.extraMass} kg')
+            self.gameStateManger.extra_mass = self.extraMass
             self.gameStateManger.set_state('simulation')
 
 
