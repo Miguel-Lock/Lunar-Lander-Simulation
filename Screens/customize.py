@@ -7,34 +7,22 @@ from gui_code.buttons import one_img, two_img, three_img, ten_img, fifty_img, hu
 
 
 class Customize(BaseState):
-    def __init__(self, screen, gameStateManger):
-        super().__init__(screen, gameStateManger)
+    def __init__(self, screen, gameStateManager):
+        super().__init__(screen, gameStateManager)
         self.display = screen
-
-        # Load background
         self.background = pygame.image.load(
-            "Screens/backgrounds/customizebackground.png").convert_alpha()
-        
-        # ALERT ALERT ALERT
-        # ALERT ALERT ALERT
-        # ALERT ALERT ALERT
-        # MIGUEL AND MATT!!! USE THESE VARIABLES!!!!!!!!!
+            "Screens/backgrounds/customizebackground.png"
+        ).convert_alpha()
+
+        # varaibles for MATT AND MIGUEL
         self.isRover = False
         self.astronautAmt = 0
         self.instrumentAmt = 0
-
         self.extraMass = 0
+        self.curr_state = "rover"
 
-        # ALERT ALERT ALERT
-        # ALERT ALERT ALERT
-        # ALERT ALERT ALERT
-        
-        self.curr_state = "rover" # start with the rover section
-        
     def run(self):
-
-        self.background = pygame.image.load(
-            "Screens/backgrounds/customizebackground.png").convert_alpha()
+        # just use them — they persist across calls
         self.display.blit(self.background, (0, 0))
 
         # handle different input sections according to current state
@@ -46,7 +34,6 @@ class Customize(BaseState):
             self.instrument_sec()
         elif self.curr_state == "start":
             self.start_sec()
-
 
         # Back to menu button
         menu_button = Button(50, 50, backtomenu_button_img, 1)
@@ -224,11 +211,3 @@ class Customize(BaseState):
             print(f'Adding {self.extraMass} kg')
             self.gameStateManger.extra_mass = self.extraMass
             self.gameStateManger.set_state('simulation')
-
-
-
-
-
-
-
-
