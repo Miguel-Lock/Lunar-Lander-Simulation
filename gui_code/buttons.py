@@ -23,6 +23,12 @@ two_img = pygame.image.load(
     'gui_code/buttons/2.png').convert_alpha()
 three_img = pygame.image.load(
     'gui_code/buttons/3.png').convert_alpha()
+ten_img = pygame.image.load(
+    'gui_code/buttons/10.png').convert_alpha()
+fifty_img = pygame.image.load(
+    'gui_code/buttons/50.png').convert_alpha()
+hundred_img = pygame.image.load(
+    'gui_code/buttons/100.png').convert_alpha()
 
 
 # button class to declare button instances

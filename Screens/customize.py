@@ -2,7 +2,7 @@ import pygame
 import time
 from game_state_manager import BaseState
 from constants import SCREENWIDTH, SCREENHEIGHT, FONT, SCREEN
-from gui_code.buttons import Button, backtomenu_button_img, start_button_img, yes_img, no_img, one_img, two_img, three_img
+from gui_code.buttons import Button, backtomenu_button_img, start_button_img, yes_img, no_img, one_img, two_img, three_img, ten_img, fifty_img, hundred_img
 from gui_code.buttons import InputBox
 
 
@@ -15,10 +15,16 @@ class Customize(BaseState):
         self.background = pygame.image.load(
             "Screens/backgrounds/customizebackground.png").convert_alpha()
         
-        # variables for Miguel to use
+        # ALERT ALERT ALERT
+        # ALERT ALERT ALERT
+        # ALERT ALERT ALERT
+        # MIGUEL AND MATT!!! USE THESE VARIABLES!!!!!!!!!
         self.isRover = False
         self.astronautAmt = 0
         self.instrumentAmt = 0
+        # ALERT ALERT ALERT
+        # ALERT ALERT ALERT
+        # ALERT ALERT ALERT
         
         self.curr_state = "rover" # start with the rover section
         
@@ -55,7 +61,7 @@ class Customize(BaseState):
         no_button = Button(450, 550, no_img, 1)
 
         if yes_button.draw():
-            self.isRover = True
+            self.isRover = True # FOR MIGUEL AND MATT
             print("Yes")
             self.curr_state = "astronauts"
         elif no_button.draw():
@@ -69,51 +75,139 @@ class Customize(BaseState):
         astronaut_text = FONT.render('How many Astronauts? (1-3)', True, (255, 255, 255))
         self.display.blit(astronaut_text, (765, 350))
 
+
+        # display infomations selected
         if self.isRover:
             rover_text = FONT.render('Rover = Yes', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
+            # THIS NEEDS TO DISPLAY THE AMOUNT OF POUNDS ADDED ONTO THE ROCKET
+            rover_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(rover_info, (435, 400))
         else:
             rover_text = FONT.render('Rover = No', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
+            rover_info = FONT.render('Adds no additional pounds', True, (255, 255, 255))
+            self.display.blit(rover_info, (435, 400))
 
-        one_button = Button(950, 650, one_img, 1)
-        two_button = Button(1100, 550, two_img, 1)
-        three_button = Button(1250, 550, three_img, 1)
+
+        one_button = Button(900, 450, one_img, 1)
+        two_button = Button(900, 550, two_img, 1)
+        three_button = Button(900, 650, three_img, 1)
 
         if one_button.draw():
-           self.astronautAmt = 1
-           print("1")
+           self.astronautAmt = 1    # FOR MIGUEL AND MATT
+           print("Chose 1 Astronaut")
            self.curr_state = "instrument"
         elif two_button.draw():
            self.astronautAmt = 2
-           print("2")
+           print("Chose 2 Astronauts")
            self.curr_state = "instrument"
         elif three_button.draw():
            self.astronautAmt = 3
-           print("3")
+           print("Chose 3 Astronauts")
            self.curr_state = "instrument"
 
     
     def instrument_sec(self):
         # how man instruments are there from (0 - 300)
-        instrument_text = FONT.render('How many Instruments? (0-300)', True, (255, 255, 255))
-        self.display.blit(instrument_text, (800, 400))
+        instrument_text = FONT.render('How many Instruments? (10, 50, 100)', True, (255, 255, 255))
+        self.display.blit(instrument_text, (1150, 350))
 
+        # display infomations selected
         if self.isRover:
             rover_text = FONT.render('Rover = Yes', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
+            rover_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(rover_info, (435, 400))
         else:
             rover_text = FONT.render('Rover = No', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
+            rover_info = FONT.render('Adds no additional pounds', True, (255, 255, 255))
+            self.display.blit(rover_info, (435, 400))
 
-        yes_button = Button(850, 550, yes_img, 1)
-        if yes_button.draw():
-            print("Yes")
+        if self.astronautAmt == 1:
+            astro_text = FONT.render('1 Astronaut', True, (255, 255, 255))
+            self.display.blit(astro_text, (765, 350))
+            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(astro_info, (765, 400))
+        elif self.astronautAmt == 2:
+            astro_text = FONT.render('2 Astronauts', True, (255, 255, 255))
+            self.display.blit(astro_text, (765, 350))
+            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(astro_info, (765, 400))
+        elif self.astronautAmt == 3:
+            astro_text = FONT.render('3 Astronauts', True, (255, 255, 255))
+            self.display.blit(astro_text, (765, 350))
+            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(astro_info, (765, 400))
+
+        ten_button = Button(1350, 450, ten_img, 1)
+        fifty_button = Button(1350, 550, fifty_img, 1)
+        hundred_button = Button(1350, 650, hundred_img, 1)
+        if ten_button.draw():
+            self.instrumentAmt = 10 # FOR MIGUEL AND MATT
+            print("Chose 10")
             self.curr_state = "start"
+        elif fifty_button.draw():
+            self.instrumentAmt = 50
+            print("Chose 50")
+            self.curr_state = "start"
+        elif hundred_button.draw():
+            self.instrumentAmt = 100
+            print("Chose 100")
+            self.curr_state = "start"
+
 
     def start_sec(self):
         start_text = FONT.render('Press Start to Begin Simulation', True, (255, 255, 255))
-        self.display.blit(start_text, (850, 400))
+        self.display.blit(start_text, (700, 900))        
+
+        # display infomations selected
+        if self.isRover:
+            rover_text = FONT.render('Rover = Yes', True, (255, 255, 255))
+            self.display.blit(rover_text, (435, 350))
+            rover_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(rover_info, (435, 400))
+        else:
+            rover_text = FONT.render('Rover = No', True, (255, 255, 255))
+            self.display.blit(rover_text, (435, 350))
+            rover_info = FONT.render('Adds no additional pounds', True, (255, 255, 255))
+            self.display.blit(rover_info, (435, 400))
+
+        if self.astronautAmt == 1:
+            astro_text = FONT.render('1 Astronaut', True, (255, 255, 255))
+            self.display.blit(astro_text, (765, 350))
+            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(astro_info, (765, 400))
+        elif self.astronautAmt == 2:
+            astro_text = FONT.render('2 Astronauts', True, (255, 255, 255))
+            self.display.blit(astro_text, (765, 350))
+            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(astro_info, (765, 400))
+        elif self.astronautAmt == 3:
+            astro_text = FONT.render('3 Astronauts', True, (255, 255, 255))
+            self.display.blit(astro_text, (765, 350))
+            astro_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(astro_info, (765, 400))
+
+       
+        if self.instrumentAmt == 10:
+            inst_text = FONT.render('10 instruments on board', True, (255, 255, 255))
+            self.display.blit(inst_text, (1150, 350))
+            inst_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(inst_info, (1150, 400))
+        elif self.instrumentAmt == 50:
+            inst_text = FONT.render('50 instruments on board', True, (255, 255, 255))
+            self.display.blit(inst_text, (1150, 350))
+            inst_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(inst_info, (1150, 400))
+        elif self.instrumentAmt == 100:
+            inst_text = FONT.render('100 instruments on board', True, (255, 255, 255))
+            self.display.blit(inst_text, (1150, 350))
+            inst_info = FONT.render('Adds - lbs', True, (255, 255, 255))
+            self.display.blit(inst_info, (1150, 400))
+
+
         # displays start button to start
         customize_start_button = Button(1660, 975, start_button_img, 1)
         if customize_start_button.draw() is True:
