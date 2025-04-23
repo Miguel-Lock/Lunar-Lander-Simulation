@@ -86,7 +86,7 @@ class Customize(BaseState):
         else:
             rover_text = FONT.render('Rover = No', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
-            rover_info = FONT.render('Adds no additional pounds', True, (255, 255, 255))
+            rover_info = FONT.render('Adds 0 lbs', True, (255, 255, 255))
             self.display.blit(rover_info, (435, 400))
 
 
@@ -122,7 +122,7 @@ class Customize(BaseState):
         else:
             rover_text = FONT.render('Rover = No', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
-            rover_info = FONT.render('Adds no additional pounds', True, (255, 255, 255))
+            rover_info = FONT.render('Adds 0 lbs', True, (255, 255, 255))
             self.display.blit(rover_info, (435, 400))
 
         if self.astronautAmt == 1:
@@ -171,7 +171,7 @@ class Customize(BaseState):
         else:
             rover_text = FONT.render('Rover = No', True, (255, 255, 255))
             self.display.blit(rover_text, (435, 350))
-            rover_info = FONT.render('Adds no additional pounds', True, (255, 255, 255))
+            rover_info = FONT.render('Adds 0 lbs', True, (255, 255, 255))
             self.display.blit(rover_info, (435, 400))
 
         if self.astronautAmt == 1:
