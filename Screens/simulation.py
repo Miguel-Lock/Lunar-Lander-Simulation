@@ -3,7 +3,7 @@ import time  # for delay between landing and results
 import sqlite3 # for database entries
 from game_state_manager import BaseState
 # from pygame.locals import RLEACCEL
-from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX, BASE_ROCKET_AND_FUEL, BASE_FUEL_AMT, BASE_ROCKET
+from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX, BASE_ROCKET_AND_FUEL, BASE_FUEL_AMT, BASE_ROCKET, SAFE_VELOCITY
 from algos import MyAlgos
 from gui_code.buttons import Button, exit_button_img
 
@@ -123,7 +123,7 @@ class Simulation(BaseState):
                     initial_mass,
                     BASE_FUEL_AMT,
                     remaining_fuel,
-                    True)
+                    self.rocket.safely_landed)
             # takes both the query and values and combines them to make a valid sql query to
             # insert post-flight information into the database
             cursor.execute(attemptQuery,values)
@@ -174,9 +174,11 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
 
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
-            if abs(self.algos.velocity) > 200: # if velocity is greater than 200, result is crash
+            if abs(self.algos.velocity) > SAFE_VELOCITY: # if velocity is greater than 200, result is crash
+                self.safely_landed = False
                 self.surf = tilapia_crash_img # change to crash sprite
             else:
+                self.safely_landed = True
                 self.surf = tilapia_success_img
                 #self.is_successful = true
             self.is_landed = True
