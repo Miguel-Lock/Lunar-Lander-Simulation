@@ -7,6 +7,12 @@ from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_B
 from algos import MyAlgos
 from gui_code.buttons import Button, exit_button_img
 
+# Initialize pygame mixer for music
+pygame.mixer.init()
+
+# Load music file (flight of the valkyrie)
+pygame.mixer.music.load("Screens/rocket_assets/RideOfValk.mp3")
+
 # importing idle rocket png
 tilapia_idle_img = pygame.image.load(
     'Screens/rocket_assets/Tilapia.png').convert_alpha()
@@ -14,6 +20,12 @@ tilapia_idle_img = pygame.image.load(
 # importing rocket thrust png
 tilapia_thrust_img = pygame.image.load(
     'Screens/rocket_assets/TilapiaThrust.png').convert_alpha()
+# importing rocket successful landing png
+tilapia_success_img = pygame.image.load(
+    'Screens/rocket_assets/TilapiaYay.png').convert_alpha()
+# importing rocket crash png
+tilapia_crash_img = pygame.image.load(
+    'Screens/rocket_assets/TilapiaSad.png').convert_alpha()
 
 # Simulation screen
 
@@ -28,8 +40,9 @@ class Simulation(BaseState):
         self.background = pygame.image.load(
             # convert_alpha may or may not improve performance
             "Screens/backgrounds/simulationscreen.png").convert_alpha()
-
+        pygame.mixer.music.play() # begins playing music
         self.reset()
+        
 
     def reset(self):
         self.rocket = None
@@ -81,7 +94,7 @@ class Simulation(BaseState):
         # after rocket lands
         # delays for 3 seconds and then displays results
         if self.rocket.is_landed is True:
-            # print(rocket.)
+            pygame.display.flip() # update the sprite to crash / successful landing
             # connects to database OR creates one if none is
             conn = sqlite3.connect('lunarlander.db')
             # creates cursor object to create queries
@@ -107,6 +120,7 @@ class Simulation(BaseState):
             conn.commit()
             conn.close()
             time.sleep(1)
+            pygame.mixer.music.stop() # stops playing music once sim is finished
             self.reset()
             self.gameStateManger.set_state('results')
 
@@ -150,8 +164,13 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
 
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
-            self.surf = tilapia_idle_img  # reset image to idle
+            if abs(self.algos.velocity) > 200: # if velocity is greater than 200, result is crash
+                self.surf = tilapia_crash_img # change to crash sprite
+            else:
+                self.surf = tilapia_success_img
+                #self.is_successful = true
             self.is_landed = True
+            #self.surf = tilapia_idle_img  # reset image to idle
             self.rect.bottom = SURFACE  # Stop vertical movement
         else:
             self.is_landed = False
