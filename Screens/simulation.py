@@ -67,7 +67,7 @@ class Simulation(BaseState):
             self.elapsed_time = (pygame.time.get_ticks() - self.start_time) / 1000
 
         info_lines = [
-            f"Velocity: {abs(int(self.rocket.algos.velocity))} m/s",
+            f"Downwards Velocity: {int(self.rocket.algos.velocity)} m/s",
             f"Fuel Remaining: {int(self.rocket.algos.mass) - (BASE_ROCKET + getattr(self.gameStateManger, 'extra_mass', 0))} kg",
             f"Engine: {self.rocket.thrust_switch()}",
             f"Time: {self.elapsed_time:.1f} s",
