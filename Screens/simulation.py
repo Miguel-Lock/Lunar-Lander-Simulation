@@ -14,6 +14,12 @@ tilapia_idle_img = pygame.image.load(
 # importing rocket thrust png
 tilapia_thrust_img = pygame.image.load(
     'Screens/rocket_assets/TilapiaThrust.png').convert_alpha()
+# importing rocket successful landing png
+tilapia_success_img = pygame.image.load(
+    'Screens/rocket_assets/TilapiaYay.png').convert_alpha()
+# importing rocket crash png
+tilapia_crash_img = pygame.image.load(
+    'Screens/rocket_assets/TilapiaSad.png').convert_alpha()
 
 # Simulation screen
 
@@ -81,7 +87,7 @@ class Simulation(BaseState):
         # after rocket lands
         # delays for 3 seconds and then displays results
         if self.rocket.is_landed is True:
-            # print(rocket.)
+            pygame.display.flip() # update the sprite to crash / successful landing
             # connects to database OR creates one if none is
             conn = sqlite3.connect('lunarlander.db')
             # creates cursor object to create queries
@@ -150,8 +156,13 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
 
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
-            self.surf = tilapia_idle_img  # reset image to idle
+            if abs(self.algos.velocity) > 200: # if velocity is greater than 200, result is crash
+                self.surf = tilapia_crash_img # change to crash sprite
+            else:
+                self.surf = tilapia_success_img
+                #self.is_successful = true
             self.is_landed = True
+            #self.surf = tilapia_idle_img  # reset image to idle
             self.rect.bottom = SURFACE  # Stop vertical movement
         else:
             self.is_landed = False
