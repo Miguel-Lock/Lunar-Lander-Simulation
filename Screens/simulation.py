@@ -3,7 +3,7 @@ import time  # for delay between landing and results
 import sqlite3 # for database entries
 from game_state_manager import BaseState
 # from pygame.locals import RLEACCEL
-from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX
+from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX, BASE_ROCKET_AND_FUEL, BASE_FUEL_AMT, BASE_ROCKET
 from algos import MyAlgos
 from gui_code.buttons import Button, exit_button_img
 
@@ -68,7 +68,7 @@ class Simulation(BaseState):
 
         info_lines = [
             f"Velocity: {abs(int(self.rocket.algos.velocity))} m/s",
-            f"Fuel Remaining: {int(self.rocket.algos.mass)} kg",
+            f"Fuel Remaining: {int(self.rocket.algos.mass) - (BASE_ROCKET + getattr(self.gameStateManger, 'extra_mass', 0))} kg",
             f"Engine: {self.rocket.thrust_switch()}",
             f"Time: {self.elapsed_time:.1f} s",
             # f"Distance: {int(self.rocket.getDistance())} m"
@@ -113,7 +113,17 @@ class Simulation(BaseState):
             # this query returns number of attempts already in database
             cursor.execute('SELECT COUNT(attemptNum) FROM Attempts') 
             currentIteration = cursor.fetchone()
-            values = (currentIteration[0]+1,round(self.elapsed_time, 1),100,56,44,True)
+
+            initial_mass = BASE_ROCKET_AND_FUEL + getattr(self.gameStateManger, 'extra_mass', 0)
+            fuel_used = initial_mass - int(self.rocket.algos.mass)
+            remaining_fuel = BASE_FUEL_AMT - fuel_used
+
+            values = (currentIteration[0]+1,
+                    round(self.elapsed_time,1),
+                    initial_mass,
+                    BASE_FUEL_AMT,
+                    remaining_fuel,
+                    True)
             # takes both the query and values and combines them to make a valid sql query to
             # insert post-flight information into the database
             cursor.execute(attemptQuery,values)

@@ -1,4 +1,4 @@
-from constants import GRAVITY, MMOON, RMOON, FORCEOFTHRUST, SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, VERTICAL_DISTANCE, FPS, METERPERPX, PXPERMETER
+from constants import GRAVITY, MMOON, RMOON, FORCEOFTHRUST, SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, VERTICAL_DISTANCE, FPS, METERPERPX, PXPERMETER, BASE_ROCKET_AND_FUEL, BASE_FUEL_AMT
 import time
 
 
@@ -6,7 +6,7 @@ class MyAlgos:
     def __init__(self, extra_mass=0):
         # starting values
         # mass
-        self.mass = 3000 + extra_mass
+        self.mass = BASE_ROCKET_AND_FUEL + extra_mass
         self.newMass = 0
         # velocity: m/s
         self.velocity = 100
@@ -15,7 +15,7 @@ class MyAlgos:
         self.height = 100000
         self.newHeight = 0
         # mass of fuel used
-        self.massFuel = 10
+        self.massFuel = BASE_FUEL_AMT
         # tick speed
 
         self.downards_movement = self.pixelMeterConversion(self.velocity)
