@@ -14,7 +14,11 @@ class Customize(BaseState):
             "Screens/backgrounds/customizebackground.png"
         ).convert_alpha()
 
-        # varaibles for MATT AND MIGUEL
+        # Initialize default values
+        self.reset()
+
+    def reset(self):
+        """Reset all customization values to defaults"""
         self.isRover = False
         self.astronautAmt = 0
         self.instrumentAmt = 0
@@ -210,4 +214,5 @@ class Customize(BaseState):
         if customize_start_button.draw() is True:
             print(f'Adding {self.extraMass} kg')
             self.gameStateManger.extra_mass = self.extraMass
+            self.reset()  # Reset when returning to menu
             self.gameStateManger.set_state('simulation')

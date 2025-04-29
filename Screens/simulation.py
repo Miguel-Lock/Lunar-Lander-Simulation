@@ -24,12 +24,17 @@ class Simulation(BaseState):
         self.display = screen
         self.all_sprites = pygame.sprite.Group()
 
-        self.rocket = None
-
         # Load background in init so it isn't loaded every frame
         self.background = pygame.image.load(
             # convert_alpha may or may not improve performance
             "Screens/backgrounds/simulationscreen.png").convert_alpha()
+
+        self.reset()
+
+    def reset(self):
+        self.rocket = None
+        self.start_time = 0
+        self.elapsed_time = 0
 
     def run(self):
         # initialize rocket if it doesn't exist
@@ -40,13 +45,19 @@ class Simulation(BaseState):
             # create instance of OurFavoriteRocketShip
             self.rocket = OurFavoriteRocketShip(extra_mass=extra_mass)
             self.all_sprites.add(self.rocket)
+            # Reset start_time when creating a new rocket
+            self.start_time = pygame.time.get_ticks()
 
         self.display.blit(self.background, (0, 0))
+
+        if not self.rocket.is_landed:
+            self.elapsed_time = (pygame.time.get_ticks() - self.start_time) / 1000
 
         info_lines = [
             f"Velocity: {abs(int(self.rocket.algos.velocity))} m/s",
             f"Fuel Remaining: {int(self.rocket.algos.mass)} kg",
-            f"Engine: {self.rocket.thrust_switch()}"
+            f"Engine: {self.rocket.thrust_switch()}",
+            f"Time: {self.elapsed_time:.1f} s",
             # f"Distance: {int(self.rocket.getDistance())} m"
         ]
         # Text for rocket info
@@ -70,6 +81,7 @@ class Simulation(BaseState):
         # after rocket lands
         # delays for 3 seconds and then displays results
         if self.rocket.is_landed is True:
+            # print(rocket.)
             # connects to database OR creates one if none is
             conn = sqlite3.connect('lunarlander.db')
             # creates cursor object to create queries
@@ -88,14 +100,14 @@ class Simulation(BaseState):
             # this query returns number of attempts already in database
             cursor.execute('SELECT COUNT(attemptNum) FROM Attempts') 
             currentIteration = cursor.fetchone()
-            values = (currentIteration[0]+1,100,100,56,44,True)
+            values = (currentIteration[0]+1,round(self.elapsed_time, 1),100,56,44,True)
             # takes both the query and values and combines them to make a valid sql query to
             # insert post-flight information into the database
             cursor.execute(attemptQuery,values)
             conn.commit()
             conn.close()
             time.sleep(1)
-            self.rocket.reset()
+            self.reset()
             self.gameStateManger.set_state('results')
 
 
