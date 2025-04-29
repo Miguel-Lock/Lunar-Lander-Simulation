@@ -7,6 +7,12 @@ from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_B
 from algos import MyAlgos
 from gui_code.buttons import Button, exit_button_img
 
+# Initialize pygame mixer for music
+pygame.mixer.init()
+
+# Load music file (flight of the valkyrie)
+pygame.mixer.music.load("Screens/rocket_assets/RideOfValk.mp3")
+
 # importing idle rocket png
 tilapia_idle_img = pygame.image.load(
     'Screens/rocket_assets/Tilapia.png').convert_alpha()
@@ -34,8 +40,9 @@ class Simulation(BaseState):
         self.background = pygame.image.load(
             # convert_alpha may or may not improve performance
             "Screens/backgrounds/simulationscreen.png").convert_alpha()
-
+        pygame.mixer.music.play() # begins playing music
         self.reset()
+        
 
     def reset(self):
         self.rocket = None
@@ -113,6 +120,7 @@ class Simulation(BaseState):
             conn.commit()
             conn.close()
             time.sleep(1)
+            pygame.mixer.music.stop() # stops playing music once sim is finished
             self.reset()
             self.gameStateManger.set_state('results')
 
