@@ -3,7 +3,7 @@ import time  # for delay between landing and results
 import sqlite3 # for database entries
 from game_state_manager import BaseState
 # from pygame.locals import RLEACCEL
-from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX
+from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, BIGFONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX
 from algos import MyAlgos
 from gui_code.buttons import Button, exit_button_img
 
@@ -27,7 +27,7 @@ tilapia_success_img = pygame.image.load(
 tilapia_crash_img = pygame.image.load(
     'Screens/rocket_assets/TilapiaSad.png').convert_alpha()
 
-warning_msg = FONT.render('!!WARNING-SLOWDOWN!!', True, (255, 0, 0))
+warning_msg = BIGFONT.render('!!WARNING-SLOWDOWN!!', True, (255, 0, 0))
 
 
 # Simulation screen
@@ -71,9 +71,7 @@ class Simulation(BaseState):
 
             # WARNING MESSAGE IF GOING TO FAST!
             if abs(self.rocket.algos.velocity) > 200:
-                self.display.blit(warning_msg, (1660, 500))
-            else:
-                print("good")
+                self.display.blit(warning_msg, (((SCREENWIDTH//2) - 240), ((SCREENHEIGHT//2) - 500)))
 
         info_lines = [
             f"Velocity: {abs(int(self.rocket.algos.velocity))} m/s",
@@ -84,8 +82,13 @@ class Simulation(BaseState):
         ]
         # Text for rocket info
         line_height = FONT.get_height()
+       
         for i, line in enumerate(info_lines):
-            line_surface = FONT.render(line, True, (255, 255, 255))
+            # changes to red if rocket is going too fast!!!!
+            if abs(self.rocket.algos.velocity) > 200:
+                line_surface = FONT.render(line, True, (255, 0, 0))
+            else:
+                line_surface = FONT.render(line, True, (255, 255, 255))
             self.display.blit(line_surface, (50, 50 + i * line_height))
 
 

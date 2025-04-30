@@ -12,6 +12,7 @@ METERPERPX = TOTALVERTICALDISTANCE // VERTICAL_DISTANCE  # 132.3
 PXPERMETER = VERTICAL_DISTANCE // TOTALVERTICALDISTANCE  # 0.00756
 FPS = 60
 FONT = pygame.font.Font("gui_code/fonts/UbuntuNerdFont-Regular.ttf", 30)
+BIGFONT = pygame.font.Font("gui_code/fonts/UbuntuNerdFont-Regular.ttf", 45)
 SCREEN = pygame.display.set_mode(
     (SCREENWIDTH, SCREENHEIGHT))  # global screen size/variable
 GRAVITY = 0.0000000000667430  # m^3/(s^2 * kg) <- G
