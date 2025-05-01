@@ -1,57 +1,65 @@
-from constants import GRAVITY, MMOON, RMOON, FORCEOFTHRUST, SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, VERTICAL_DISTANCE, FPS, METERPERPX, PXPERMETER
+from constants import GRAVITY, MMOON, RMOON, FORCEOFTHRUST, SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, VERTICAL_DISTANCE, FPS, METERPERPX, PXPERMETER, TOTALVERTICALDISTANCE
 import time
 
 
 class MyAlgos:
     def __init__(self):
         # starting values
+        # fuel tank
+        self.totalFuelMass = 100
+        # the weight of the lander and its payload
+        self.totalRawMass = 1000
         # mass
-        self.mass = 3000
+        self.mass = self.totalRawMass + self.totalFuelMass
         self.newMass = 0
         # velocity: m/s
-        self.velocity = 100
+        self.velocity = 10
         self.newVelocity = 0
         # height m
-        self.height = 100000
+        self.height = TOTALVERTICALDISTANCE
         self.newHeight = 0
         # mass of fuel used
         self.massFuel = 10
         # tick speed
+        self.tick = self.fpsToSecond(FPS)
 
+        #get the starting position of the lander
         self.downards_movement = self.pixelMeterConversion(self.velocity)
+        self.converted_height = self.pixelMeterConversion(self.height)
 
-    def move_down(self, firing_rockets):  # weight of change
-        if not firing_rockets:
-            # self.downards_movement += .05
+    #determines if the lander will activate thrusters
+    def move_down(self, firing_rockets):
+         if not firing_rockets or self.totalFuelMass <= 0:
+            return self.freeFall()
+         elif firing_rockets:
+            return self.thrust()
+    
+    #uses various physics to calculate the thrust for velocity and height
+    def thrust(self):
 
-            self.newVelocity = self.velocity + \
-                self.netAvgWithoutThrust(self.gMoonAtH(self.height))
-            self.newHeight = self.CurAlt(self.height, self.velocity, self.fpsToSecond(
-                60), self.netAvgWithoutThrust(self.gMoonAtH(self.height)))
-            self.velocity = self.newVelocity
-            self.height = self.newHeight
-            time.sleep(self.fpsToSecond(60))
-
-            self.downards_movement = self.pixelMeterConversion(self.velocity)
-        elif firing_rockets:
-            # self.downards_movement -= 0.05
-
-            self.newVelocity = self.avgVel(self.velocity, self.netAvgatT(self.fuelBurn(self.massFuel, self.fpsToSecond(
-                60)), self.gMoonAtH(self.height), self.mass, self.massFuel, self.fpsToSecond(60)), self.fpsToSecond(60))
-            self.newHeight = self.CurAlt(self.height, self.velocity, self.fpsToSecond(60), self.netAvgatT(self.fuelBurn(
-                self.massFuel, self.fpsToSecond(60)), self.gMoonAtH(self.height), self.mass, self.massFuel, self.fpsToSecond(60)))
-            self.velocity = self.newVelocity
-            self.height = self.newHeight
-            self.mass = self.mass - (self.massFuel * self.fpsToSecond(60))
-            time.sleep(self.fpsToSecond(60))
-
-            self.downards_movement = self.pixelMeterConversion(self.velocity)
+        self.newVelocity = self.avgVel(self.velocity, self.netAvgatT(self.fuelBurn(self.massFuel, self.tick), 
+            self.gMoonAtH(self.height), self.mass, self.massFuel, self.tick), self.tick)
+        self.newHeight = self.CurAlt(self.height, self.velocity, self.tick, self.netAvgatT(self.fuelBurn(self.massFuel, self.tick), 
+            self.gMoonAtH(self.height), self.mass, self.massFuel, self.tick))
+        self.velocity = self.newVelocity
+        self.height = self.newHeight
+        self.totalFuelMass = self.totalFuelMass - (self.massFuel * self.tick)
+        self.mass = self.totalRawMass + self.totalFuelMass
+        time.sleep(self.tick)
+        self.downards_movement = self.pixelMeterConversion(self.velocity)
         return self.downards_movement
 
-    def gravity(self):  # weight of change
-        self.gravity_value *= 1.005
-        return self.gravity_value
+    #calculates the freefall for the lander for the velocity and the height
+    def freeFall(self):
+        self.newVelocity = self.velocity + self.netAvgWithoutThrust(self.gMoonAtH(self.height))
+        self.newHeight = self.CurAlt(self.height, self.velocity, self.tick, self.netAvgWithoutThrust(self.gMoonAtH(self.height)))
+        self.velocity = self.newVelocity
+        self.height = self.newHeight
+        time.sleep(self.tick)
+        self.downards_movement = self.pixelMeterConversion(self.velocity)
+        return self.downards_movement
 
+    #converts the FPS from constants to seconds
     def fpsToSecond(self, fps):
         return 1/fps
 
@@ -64,10 +72,9 @@ class MyAlgos:
         return (GRAVITY * MMOON) / ((RMOON + h) ** 2)
 
     # calculates how much force is applied per kg
-    # this is a 100 N to 1 Kg/s burn
+    # this is a 300 N to 1 Kg/s burn
     def fuelBurn(self, MfAtF, dt):
-        # SOMETHING IS WRONG HERE!!!!!!! The rEtURN NUMBER SHOULD NOT BE SO BIG!
-        return -1500000 * (MfAtF * dt)
+        return 3000 * (-MfAtF * dt)
 
     # Average acceleration at time t
     # Ft = thrust appled now
@@ -78,6 +85,7 @@ class MyAlgos:
         fuelConsumed = MfAtF * dt
         return ((Ft - GmH * Mltl) / (Mltl - (0.5) * fuelConsumed))
 
+    #!FIXME need to account the weight aswell for freefall
     def netAvgWithoutThrust(self, GmH):
         return GmH
 
@@ -98,19 +106,13 @@ class MyAlgos:
         return htl - (vtl * dt) - (0.5 * aT * dt ** 2)
 
     # 243px-1026px (bottom of lander to surface of moon)
-    # thus 783px = 100,000
+    # thus 783px = 100,000 <-- Superceded by 10000
     # 1px = 128m
     def pixelMeterConversion(self, meters):
-        #return (meters * VERTICAL_DISTANCE) / 100000
         return meters / METERPERPX
 
     def reset(self):
         self.__init__()
 
 
-# notes for relism:
-# 1. the thrust to weight ratio seems to be a bit off. relistically its only about 1/5th
-# the ammount of force needed to stop. a converstion factor of 1000 N per kg/s insted of 100N would be better
-# 2. the inital conditions seem a bit off expecally the starting altitude and the velocity of decent
-# relistically it should be around 10000-15000m with a velocity of 10m/s
-# 3. the mass relative to engine thrust is unrealistic. eather change the thrust ammount or decrease weight of lander
+

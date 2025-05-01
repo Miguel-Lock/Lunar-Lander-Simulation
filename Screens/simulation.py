@@ -2,7 +2,7 @@ import pygame
 import time  # for delay between landing and results
 from game_state_manager import BaseState
 # from pygame.locals import RLEACCEL
-from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX
+from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX, VERTICAL_DISTANCE, TOTALVERTICALDISTANCE
 from algos import MyAlgos
 from gui_code.buttons import Button, exit_button_img
 
@@ -37,9 +37,10 @@ class Simulation(BaseState):
 
         info_lines = [
             f"Velocity: {abs(int(self.rocket.algos.velocity))} m/s",
-            f"Fuel Remaining: {int(self.rocket.algos.mass)} kg",
-            f"Engine: {self.rocket.thrust_switch()}"
-            # f"Distance: {int(self.rocket.getDistance())} m"
+            f"Weight Of Lander: {int(self.rocket.algos.mass)} kg",
+            f"Fuel Remaining: {int(self.rocket.algos.totalFuelMass)} kg",
+            f"Engine: {self.rocket.thrust_switch()}",
+            f"Distance: {int(self.rocket.getDistance())} m"
         ]
         # Text for rocket info
         line_height = FONT.get_height()
@@ -118,11 +119,9 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
         if self.rect.bottom > SURFACE:
             self.rect.bottom = SURFACE
 
-    # def getDistance(self):
-    #    # get the current distance in metters based on rocket position
-    #    pixels_from_surface = (SURFACE - self.rect.bottom)
-    #    #return pixels_from_surface // PXPERMETER
-    #    return (pixels_from_surface / 756) * 100000
+    def getDistance(self):
+        # get the current distance in metters based on rocket position
+        return self.algos.height
 
     def reset(self):
         self.is_landed = False
