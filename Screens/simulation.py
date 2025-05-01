@@ -3,7 +3,7 @@ import time  # for delay between landing and results
 import sqlite3 # for database entries
 from game_state_manager import BaseState
 # from pygame.locals import RLEACCEL
-from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, BIGFONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX
+from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, BIGFONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX, BASE_ROCKET_AND_FUEL, BASE_FUEL_AMT, BASE_ROCKET, SAFE_VELOCITY
 from algos import MyAlgos
 from gui_code.buttons import Button, exit_button_img
 
@@ -68,23 +68,26 @@ class Simulation(BaseState):
         if not self.rocket.is_landed:
             self.elapsed_time = (pygame.time.get_ticks() - self.start_time) / 1000
 
-            # WARNING MESSAGE IF GOING TO FAST!
-            if abs(self.rocket.algos.velocity) > 200:
-                self.display.blit(warning_msg, (((SCREENWIDTH//2) - 240), ((SCREENHEIGHT//2) - 500)))
+        if self.rocket.algos.totalFuelMass < 0:
+            self.rocket.algos.totalFuelMass = 0
+
+        # WARNING MESSAGE IF GOING TO FAST!
+        if self.rocket.algos.velocity > SAFE_VELOCITY:
+            self.display.blit(warning_msg, (((SCREENWIDTH//2) - 240), ((SCREENHEIGHT//2) - 500)))
 
         info_lines = [
-            f"Velocity: {abs(int(self.rocket.algos.velocity))} m/s",
-            f"Fuel Remaining: {int(self.rocket.algos.mass)} kg",
+            f"Downwards Velocity: {int(self.rocket.algos.velocity)} m/s",
+            f"Fuel Remaining: {self.rocket.algos.totalFuelMass:.3f} kg",
             f"Engine: {self.rocket.thrust_switch()}",
             f"Time: {self.elapsed_time:.1f} s",
-            # f"Distance: {int(self.rocket.getDistance())} m"
+            f"Distance: {int(self.rocket.algos.height)} m"
         ]
         # Text for rocket info
         line_height = FONT.get_height()
        
         for i, line in enumerate(info_lines):
             # changes to red if rocket is going too fast!!!!
-            if abs(self.rocket.algos.velocity) > 200:
+            if self.rocket.algos.velocity > SAFE_VELOCITY:
                 line_surface = FONT.render(line, True, (255, 0, 0))
             else:
                 line_surface = FONT.render(line, True, (255, 255, 255))
@@ -99,6 +102,16 @@ class Simulation(BaseState):
 
         # Key press detection
         keys = pygame.key.get_pressed()
+
+        # Create a modified copy of keys when out of fuel
+        if self.rocket.algos.totalFuelMass <= 0:
+            # Convert keys to list so we can modify it
+            keys_list = list(keys)
+            # Disable the space key specifically
+            keys_list[pygame.K_SPACE] = False
+            # Use the modified keys
+            keys = keys_list
+
         self.rocket.update(keys)  # update rocket on keypress
         # update screen on keypress
         self.display.blit(self.rocket.surf, self.rocket.rect)
@@ -125,12 +138,17 @@ class Simulation(BaseState):
             # this query returns number of attempts already in database
             cursor.execute('SELECT COUNT(attemptNum) FROM Attempts') 
             currentIteration = cursor.fetchone()
-            # stores rocket landing result
-            if self.rocket.is_successful:
-                landingResult = "Success!"
-            else:
-                landingResult = "Crash!"
-            values = (currentIteration[0]+1,round(self.elapsed_time, 1),100,56,44,landingResult)
+
+            initial_mass = BASE_ROCKET_AND_FUEL + getattr(self.gameStateManger, 'extra_mass', 0)
+            fuel_used = initial_mass - int(self.rocket.algos.mass)
+            remaining_fuel = BASE_FUEL_AMT - fuel_used
+
+            values = (currentIteration[0]+1,
+                    round(self.elapsed_time,1),
+                    initial_mass,
+                    BASE_FUEL_AMT,
+                    self.rocket.algos.totalFuelMass,
+                    self.rocket.safely_landed)
             # takes both the query and values and combines them to make a valid sql query to
             # insert post-flight information into the database
             cursor.execute(attemptQuery,values)
@@ -183,10 +201,12 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
 
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
-            if abs(self.algos.velocity) > 200: # if velocity is greater than 200, result is crash
+            if abs(self.algos.velocity) > SAFE_VELOCITY: # if velocity is greater than , result is crash
+                self.safely_landed = False
                 self.surf = tilapia_crash_img # change to crash sprite
                 self.is_successful = False
             else:
+                self.safely_landed = True
                 self.surf = tilapia_success_img
                 self.is_successful = True
             self.is_landed = True

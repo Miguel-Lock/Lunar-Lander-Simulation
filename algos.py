@@ -1,56 +1,54 @@
-from constants import GRAVITY, MMOON, RMOON, FORCEOFTHRUST, SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, VERTICAL_DISTANCE, FPS, METERPERPX, PXPERMETER
+from constants import GRAVITY, MMOON, RMOON, SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, VERTICAL_DISTANCE, FPS, METERPERPX, PXPERMETER, BASE_ROCKET_AND_FUEL, BASE_FUEL_AMT, TOTALVERTICALDISTANCE, BASE_ROCKET
 import time
 
 
 class MyAlgos:
     def __init__(self, extra_mass=0):
         # starting values
+        self.totalFuelMass = BASE_FUEL_AMT
         # mass
-        self.mass = 3000 + extra_mass
-        self.newMass = 0
+        self.mass = BASE_ROCKET_AND_FUEL + extra_mass
         # velocity: m/s
-        self.velocity = 100
+        self.velocity = 10
         self.newVelocity = 0
         # height m
-        self.height = 100000
-        self.newHeight = 0
+        self.height = TOTALVERTICALDISTANCE
         # mass of fuel used
         self.massFuel = 10
         # tick speed
+        self.tick = self.fpsToSecond(FPS)
 
+        self.exact_position = 0.0
         self.downards_movement = self.pixelMeterConversion(self.velocity)
 
     def move_down(self, firing_rockets):  # weight of change
         if not firing_rockets:
-            # self.downards_movement += .05
-
-            self.newVelocity = self.velocity + \
-                self.netAvgWithoutThrust(self.gMoonAtH(self.height))
-            self.newHeight = self.CurAlt(self.height, self.velocity, self.fpsToSecond(
-                60), self.netAvgWithoutThrust(self.gMoonAtH(self.height)))
-            self.velocity = self.newVelocity
-            self.height = self.newHeight
-            time.sleep(self.fpsToSecond(60))
-
-            self.downards_movement = self.pixelMeterConversion(self.velocity)
+            return self.freeFall()
         elif firing_rockets:
-            # self.downards_movement -= 0.05
+            return self.thrust()
+        
+    def thrust(self):
+        self.newVelocity = self.avgVel(self.velocity, self.netAvgatT(self.fuelBurn(self.massFuel, self.tick), 
+            self.gMoonAtH(self.height), self.mass, self.massFuel, self.tick), self.tick)
+        self.height = self.CurAlt(self.height, self.velocity, self.tick, self.netAvgatT(self.fuelBurn(self.massFuel, self.tick), 
+            self.gMoonAtH(self.height), self.mass, self.massFuel, self.tick))
+        self.velocity = self.newVelocity
+        self.totalFuelMass = self.totalFuelMass - (self.massFuel * self.tick)
+        self.mass = BASE_ROCKET + self.totalFuelMass
+        time.sleep(self.tick)
+        self.downards_movement = self.pixelMeterConversion(self.velocity)
 
-            self.newVelocity = self.avgVel(self.velocity, self.netAvgatT(self.fuelBurn(self.massFuel, self.fpsToSecond(
-                60)), self.gMoonAtH(self.height), self.mass, self.massFuel, self.fpsToSecond(60)), self.fpsToSecond(60))
-            self.newHeight = self.CurAlt(self.height, self.velocity, self.fpsToSecond(60), self.netAvgatT(self.fuelBurn(
-                self.massFuel, self.fpsToSecond(60)), self.gMoonAtH(self.height), self.mass, self.massFuel, self.fpsToSecond(60)))
-            self.velocity = self.newVelocity
-            self.height = self.newHeight
-            self.mass = self.mass - (self.massFuel * self.fpsToSecond(60))
-            time.sleep(self.fpsToSecond(60))
-
-            self.downards_movement = self.pixelMeterConversion(self.velocity)
         return self.downards_movement
 
-    def gravity(self):  # weight of change
-        self.gravity_value *= 1.005
-        return self.gravity_value
+    #calculates the freefall for the lander for the velocity and the height
+    def freeFall(self):
+        self.newVelocity = self.velocity + self.netAvgWithoutThrust(self.gMoonAtH(self.height)) * self.tick
+        self.height = self.CurAlt(self.height, self.velocity, self.tick, self.netAvgWithoutThrust(self.gMoonAtH(self.height)))
+        self.velocity = self.newVelocity
+        time.sleep(self.tick)
+        self.downards_movement = self.pixelMeterConversion(self.velocity)
+        
+        return self.downards_movement
 
     def fpsToSecond(self, fps):
         return 1/fps
@@ -64,10 +62,9 @@ class MyAlgos:
         return (GRAVITY * MMOON) / ((RMOON + h) ** 2)
 
     # calculates how much force is applied per kg
-    # this is a 100 N to 1 Kg/s burn
+    # this is a 3000 N to MfAtF (10) Kg/s burn
     def fuelBurn(self, MfAtF, dt):
-        # SOMETHING IS WRONG HERE!!!!!!! The rEtURN NUMBER SHOULD NOT BE SO BIG!
-        return -1500000 * (MfAtF * dt)
+        return 30000 * (-MfAtF * dt)
 
     # Average acceleration at time t
     # Ft = thrust appled now
@@ -101,8 +98,12 @@ class MyAlgos:
     # thus 783px = 100,000
     # 1px = 128m
     def pixelMeterConversion(self, meters):
-        #return (meters * VERTICAL_DISTANCE) / 100000
-        return meters / METERPERPX
+        # Convert meters to exact pixel position
+        pixel_movement = meters / METERPERPX
+        # Update the exact position
+        self.exact_position += pixel_movement
+        # Return the pixel change for display (may be 0 for small movements)
+        return int(self.exact_position) - int(self.exact_position - pixel_movement)
 
     def reset(self):
         self.__init__()

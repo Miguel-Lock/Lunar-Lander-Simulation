@@ -56,7 +56,8 @@ class Results(BaseState):
                         results_data.append(row_data)
 
         titles = ["Attemp #", "Time", "Starting Wt", "Starting Fuel", "Ending Fuel", "Success?"]
-        
+        apendecies = ["", "s", "kg", "kg", "kg", ""]
+
         for i in range(len(titles)):
             x = 485 + (i * 223)
             y = 310
@@ -77,7 +78,13 @@ class Results(BaseState):
                 
                 # Convert to string and display the data
                 if row[i] is not None:
-                    self.draw_text(str(row[i]), x, y)
+                    # Format the Success column (last column, index 5)
+                    if i == 5:  # Success column
+                        text = "Yes" if (row[i] == 1 or row[i] is True) else "No"
+                    else:
+                        text = str(row[i]) + apendecies[i]
+                    
+                    self.draw_text(text, x, y)
 
         connDB.commit()
         connDB.close()
