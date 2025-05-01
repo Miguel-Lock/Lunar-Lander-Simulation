@@ -133,8 +133,8 @@ class Simulation(BaseState):
             conn.commit()
             conn.close()
             time.sleep(1)
-            pygame.mixer.music.stop() # stops playing music once sim is finished
             self.reset()
+            pygame.mixer.music.stop() # stops playing music once sim is finished
             self.gameStateManger.set_state('results')
 
 
