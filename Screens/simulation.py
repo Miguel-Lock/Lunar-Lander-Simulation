@@ -74,7 +74,7 @@ class Simulation(BaseState):
             f"Fuel Remaining: {self.rocket.algos.totalFuelMass:.3f} kg",
             f"Engine: {self.rocket.thrust_switch()}",
             f"Time: {self.elapsed_time:.1f} s",
-            # f"Distance: {int(self.rocket.getDistance())} m"
+            f"Distance: {int(self.rocket.algos.height)} m"
         ]
         # Text for rocket info
         line_height = FONT.get_height()
