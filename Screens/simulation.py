@@ -71,23 +71,28 @@ class Simulation(BaseState):
         if self.rocket.algos.totalFuelMass < 0:
             self.rocket.algos.totalFuelMass = 0
 
+        rocket_height_pixels = SURFACE - self.rocket.rect.bottom
+        display_height = rocket_height_pixels * METERPERPX
+        if display_height <= 19:
+            display_height = 0
+
         # WARNING MESSAGE IF GOING TO FAST!
-        if self.rocket.algos.velocity > SAFE_VELOCITY:
+        if self.rocket.algos.real_velocity > SAFE_VELOCITY:
             self.display.blit(warning_msg, (((SCREENWIDTH//2) - 240), ((SCREENHEIGHT//2) - 500)))
 
         info_lines = [
-            f"Downwards Velocity: {int(self.rocket.algos.velocity)} m/s",
+            f"Downwards Velocity: {int(self.rocket.algos.real_velocity)} m/s",
             f"Fuel Remaining: {self.rocket.algos.totalFuelMass:.3f} kg",
             f"Engine: {self.rocket.thrust_switch()}",
             f"Time: {self.elapsed_time:.1f} s",
-            f"Distance: {int(self.rocket.algos.height)} m"
+            f"Distance: {int(display_height)} m"
         ]
         # Text for rocket info
         line_height = FONT.get_height()
        
         for i, line in enumerate(info_lines):
             # changes to red if rocket is going too fast!!!!
-            if self.rocket.algos.velocity > SAFE_VELOCITY:
+            if self.rocket.algos.real_velocity > SAFE_VELOCITY:
                 line_surface = FONT.render(line, True, (255, 0, 0))
             else:
                 line_surface = FONT.render(line, True, (255, 255, 255))
@@ -201,7 +206,7 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
 
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
-            if abs(self.algos.velocity) > SAFE_VELOCITY: # if velocity is greater than , result is crash
+            if self.algos.real_velocity > SAFE_VELOCITY: # if velocity is greater than , result is crash
                 self.safely_landed = False
                 self.surf = tilapia_crash_img # change to crash sprite
                 self.is_successful = False
