@@ -73,7 +73,7 @@ class Simulation(BaseState):
 
         rocket_height_pixels = SURFACE - self.rocket.rect.bottom
         display_height = rocket_height_pixels * METERPERPX
-        if display_height < 0:
+        if display_height <= 19:
             display_height = 0
 
         # WARNING MESSAGE IF GOING TO FAST!
