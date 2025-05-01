@@ -13,10 +13,13 @@ class MyAlgos:
         self.newVelocity = 0
         # height m
         self.height = TOTALVERTICALDISTANCE
+        self.downards_height = self.height * METERPERPX
         # mass of fuel used
         self.massFuel = 10
         # tick speed
+        self.physics_time_scale = 60  # Speed up physics by 60x
         self.tick = self.fpsToSecond(FPS)
+        self.real_velocity = self.velocity * METERPERPX 
 
         self.exact_position = 0.0
         self.downards_movement = self.pixelMeterConversion(self.velocity)
@@ -28,25 +31,34 @@ class MyAlgos:
             return self.thrust()
         
     def thrust(self):
+        # Use scaled time for physics calculations
+        physics_dt = self.tick * self.physics_time_scale
         self.newVelocity = self.avgVel(self.velocity, self.netAvgatT(self.fuelBurn(self.massFuel, self.tick), 
             self.gMoonAtH(self.height), self.mass, self.massFuel, self.tick), self.tick)
-        self.height = self.CurAlt(self.height, self.velocity, self.tick, self.netAvgatT(self.fuelBurn(self.massFuel, self.tick), 
+        self.height = self.CurAlt(self.height, self.velocity, physics_dt, 
+            self.netAvgatT(self.fuelBurn(self.massFuel, physics_dt), 
             self.gMoonAtH(self.height), self.mass, self.massFuel, self.tick))
         self.velocity = self.newVelocity
         self.totalFuelMass = self.totalFuelMass - (self.massFuel * self.tick)
         self.mass = BASE_ROCKET + self.totalFuelMass
         time.sleep(self.tick)
+        self.downards_height = self.height
         self.downards_movement = self.pixelMeterConversion(self.velocity)
+        self.real_velocity = self.velocity * METERPERPX 
 
         return self.downards_movement
 
     #calculates the freefall for the lander for the velocity and the height
     def freeFall(self):
+        # Use scaled time for physics calculations
+        physics_dt = self.tick * self.physics_time_scale
         self.newVelocity = self.velocity + self.netAvgWithoutThrust(self.gMoonAtH(self.height)) * self.tick
-        self.height = self.CurAlt(self.height, self.velocity, self.tick, self.netAvgWithoutThrust(self.gMoonAtH(self.height)))
+        self.height = self.CurAlt(self.height, self.velocity, physics_dt, self.netAvgWithoutThrust(self.gMoonAtH(self.height)))
         self.velocity = self.newVelocity
         time.sleep(self.tick)
+        self.downards_height = self.height
         self.downards_movement = self.pixelMeterConversion(self.velocity)
+        self.real_velocity = self.velocity * METERPERPX 
         
         return self.downards_movement
 
