@@ -43,7 +43,6 @@ class Simulation(BaseState):
         self.background = pygame.image.load(
             # convert_alpha may or may not improve performance
             "Screens/backgrounds/simulationscreen.png").convert_alpha()
-        pygame.mixer.music.play() # begins playing music
         self.reset()
         
 
@@ -143,6 +142,7 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
         super().__init__()
         self.surf = tilapia_idle_img
         self.rect = self.surf.get_rect()
+        pygame.mixer.music.play() # begins playing music
 
         self.rect.centerx = SCREENWIDTH // 2
         self.rect.bottom = ROCKET_BOTTOM
