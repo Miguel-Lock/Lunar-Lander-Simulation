@@ -66,6 +66,9 @@ class Simulation(BaseState):
         if not self.rocket.is_landed:
             self.elapsed_time = (pygame.time.get_ticks() - self.start_time) / 1000
 
+        if self.rocket.algos.totalFuelMass < 0:
+            self.rocket.algos.totalFuelMass = 0
+
         info_lines = [
             f"Downwards Velocity: {int(self.rocket.algos.velocity)} m/s",
             f"Fuel Remaining: {self.rocket.algos.totalFuelMass:.3f} kg",
@@ -132,7 +135,7 @@ class Simulation(BaseState):
                     round(self.elapsed_time,1),
                     initial_mass,
                     BASE_FUEL_AMT,
-                    remaining_fuel,
+                    self.rocket.algos.totalFuelMass,
                     self.rocket.safely_landed)
             # takes both the query and values and combines them to make a valid sql query to
             # insert post-flight information into the database
