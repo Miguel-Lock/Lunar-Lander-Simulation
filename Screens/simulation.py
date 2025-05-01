@@ -68,7 +68,7 @@ class Simulation(BaseState):
 
         info_lines = [
             f"Downwards Velocity: {int(self.rocket.algos.velocity)} m/s",
-            f"Fuel Remaining: {int(self.rocket.algos.mass) - (BASE_ROCKET + getattr(self.gameStateManger, 'extra_mass', 0))} kg",
+            f"Fuel Remaining: {self.rocket.algos.totalFuelMass:.3f} kg",
             f"Engine: {self.rocket.thrust_switch()}",
             f"Time: {self.elapsed_time:.1f} s",
             # f"Distance: {int(self.rocket.getDistance())} m"
@@ -87,6 +87,16 @@ class Simulation(BaseState):
 
         # Key press detection
         keys = pygame.key.get_pressed()
+
+        # Create a modified copy of keys when out of fuel
+        if self.rocket.algos.totalFuelMass <= 0:
+            # Convert keys to list so we can modify it
+            keys_list = list(keys)
+            # Disable the space key specifically
+            keys_list[pygame.K_SPACE] = False
+            # Use the modified keys
+            keys = keys_list
+
         self.rocket.update(keys)  # update rocket on keypress
         # update screen on keypress
         self.display.blit(self.rocket.surf, self.rocket.rect)
