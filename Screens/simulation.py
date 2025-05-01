@@ -119,13 +119,18 @@ class Simulation(BaseState):
                 totalWeight INTEGER,
                 totalFuel INTEGER,
                 fuelRemaining INTEGER,
-                attemptSuccess BOOLEAN)''')
+                attemptSuccess VARCHAR(50))''')
             attemptQuery = "INSERT INTO Attempts VALUES (?, ?, ?, ?, ?, ?)"
             # run check to make sure attemptNum is equal to the next entry in database
             # this query returns number of attempts already in database
             cursor.execute('SELECT COUNT(attemptNum) FROM Attempts') 
             currentIteration = cursor.fetchone()
-            values = (currentIteration[0]+1,round(self.elapsed_time, 1),100,56,44,True)
+            # stores rocket landing result
+            if self.rocket.is_successful:
+                landingResult = "Success!"
+            else:
+                landingResult = "Crash!"
+            values = (currentIteration[0]+1,round(self.elapsed_time, 1),100,56,44,landingResult)
             # takes both the query and values and combines them to make a valid sql query to
             # insert post-flight information into the database
             cursor.execute(attemptQuery,values)
@@ -180,9 +185,10 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
         if self.rect.bottom >= SURFACE:
             if abs(self.algos.velocity) > 200: # if velocity is greater than 200, result is crash
                 self.surf = tilapia_crash_img # change to crash sprite
+                self.is_successful = False
             else:
                 self.surf = tilapia_success_img
-                #self.is_successful = true
+                self.is_successful = True
             self.is_landed = True
             #self.surf = tilapia_idle_img  # reset image to idle
             self.rect.bottom = SURFACE  # Stop vertical movement
