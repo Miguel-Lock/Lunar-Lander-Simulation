@@ -3,7 +3,7 @@ import time  # for delay between landing and results
 import sqlite3 # for database entries
 from game_state_manager import BaseState
 # from pygame.locals import RLEACCEL
-from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX, BASE_ROCKET_AND_FUEL, BASE_FUEL_AMT, BASE_ROCKET, SAFE_VELOCITY
+from constants import SCREENWIDTH, SCREENHEIGHT, SURFACE, FONT, BIGFONT, SCREEN, ROCKET_BOTTOM, PXPERMETER, METERPERPX, BASE_ROCKET_AND_FUEL, BASE_FUEL_AMT, BASE_ROCKET, SAFE_VELOCITY
 from algos import MyAlgos
 from gui_code.buttons import Button, exit_button_img
 
@@ -27,6 +27,9 @@ tilapia_success_img = pygame.image.load(
 tilapia_crash_img = pygame.image.load(
     'Screens/rocket_assets/TilapiaSad.png').convert_alpha()
 
+warning_msg = BIGFONT.render('!!WARNING-SLOWDOWN!!', True, (255, 0, 0))
+
+
 # Simulation screen
 
 
@@ -40,7 +43,6 @@ class Simulation(BaseState):
         self.background = pygame.image.load(
             # convert_alpha may or may not improve performance
             "Screens/backgrounds/simulationscreen.png").convert_alpha()
-        pygame.mixer.music.play() # begins playing music
         self.reset()
         
 
@@ -69,6 +71,10 @@ class Simulation(BaseState):
         if self.rocket.algos.totalFuelMass < 0:
             self.rocket.algos.totalFuelMass = 0
 
+        # WARNING MESSAGE IF GOING TO FAST!
+        if self.rocket.algos.velocity > SAFE_VELOCITY:
+            self.display.blit(warning_msg, (((SCREENWIDTH//2) - 240), ((SCREENHEIGHT//2) - 500)))
+
         info_lines = [
             f"Downwards Velocity: {int(self.rocket.algos.velocity)} m/s",
             f"Fuel Remaining: {self.rocket.algos.totalFuelMass:.3f} kg",
@@ -78,9 +84,15 @@ class Simulation(BaseState):
         ]
         # Text for rocket info
         line_height = FONT.get_height()
+       
         for i, line in enumerate(info_lines):
-            line_surface = FONT.render(line, True, (255, 255, 255))
+            # changes to red if rocket is going too fast!!!!
+            if self.rocket.algos.velocity > SAFE_VELOCITY:
+                line_surface = FONT.render(line, True, (255, 0, 0))
+            else:
+                line_surface = FONT.render(line, True, (255, 255, 255))
             self.display.blit(line_surface, (50, 50 + i * line_height))
+
 
         # Buttons for screen directions
         exit_button = Button(1660, 50, exit_button_img, 1)
@@ -120,7 +132,7 @@ class Simulation(BaseState):
                 totalWeight INTEGER,
                 totalFuel INTEGER,
                 fuelRemaining INTEGER,
-                attemptSuccess BOOLEAN)''')
+                attemptSuccess VARCHAR(50))''')
             attemptQuery = "INSERT INTO Attempts VALUES (?, ?, ?, ?, ?, ?)"
             # run check to make sure attemptNum is equal to the next entry in database
             # this query returns number of attempts already in database
@@ -143,8 +155,8 @@ class Simulation(BaseState):
             conn.commit()
             conn.close()
             time.sleep(1)
-            pygame.mixer.music.stop() # stops playing music once sim is finished
             self.reset()
+            pygame.mixer.music.stop() # stops playing music once sim is finished
             self.gameStateManger.set_state('results')
 
 
@@ -153,6 +165,7 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
         super().__init__()
         self.surf = tilapia_idle_img
         self.rect = self.surf.get_rect()
+        pygame.mixer.music.play() # begins playing music
 
         self.rect.centerx = SCREENWIDTH // 2
         self.rect.bottom = ROCKET_BOTTOM
@@ -185,15 +198,17 @@ class OurFavoriteRocketShip(pygame.sprite.Sprite):
                 self.surf = tilapia_idle_img
                 self.is_thrust = False
 
+
         # Check if rocket has landed
         if self.rect.bottom >= SURFACE:
-            if abs(self.algos.velocity) > SAFE_VELOCITY: # if velocity is greater than 200, result is crash
+            if abs(self.algos.velocity) > SAFE_VELOCITY: # if velocity is greater than , result is crash
                 self.safely_landed = False
                 self.surf = tilapia_crash_img # change to crash sprite
+                self.is_successful = False
             else:
                 self.safely_landed = True
                 self.surf = tilapia_success_img
-                #self.is_successful = true
+                self.is_successful = True
             self.is_landed = True
             #self.surf = tilapia_idle_img  # reset image to idle
             self.rect.bottom = SURFACE  # Stop vertical movement
